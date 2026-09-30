@@ -1,0 +1,69 @@
+- generic [ref=f9e26]:
+  - navigation [ref=f9e27]:
+    - generic [ref=f9e28]:
+      - generic [ref=f9e29]:
+        - img "Didaxis Studio" [ref=f9e30]
+        - generic [ref=f9e31]:
+          - paragraph [ref=f9e32]: Didaxis
+          - paragraph [ref=f9e33]: Studio
+      - generic [ref=f9e34]:
+        - button "📊 Dashboard" [ref=f9e35] [cursor=pointer]:
+          - generic [ref=f9e36]: 📊
+          - paragraph [ref=f9e37]: Dashboard
+        - button "🎓 Programs" [ref=f9e38] [cursor=pointer]:
+          - generic [ref=f9e39]: 🎓
+          - paragraph [ref=f9e40]: Programs
+        - button "📅 Calendar" [ref=f9e41] [cursor=pointer]:
+          - generic [ref=f9e42]: 📅
+          - paragraph [ref=f9e43]: Calendar
+        - button "✅ Validation" [ref=f9e44] [cursor=pointer]:
+          - generic [ref=f9e45]: ✅
+          - paragraph [ref=f9e46]: Validation
+        - button "⚡ Scheduler" [ref=f9e47] [cursor=pointer]:
+          - generic [ref=f9e48]: ⚡
+          - paragraph [ref=f9e49]: Scheduler
+        - button "📤 Export" [ref=f9e50] [cursor=pointer]:
+          - generic [ref=f9e51]: 📤
+          - paragraph [ref=f9e52]: Export
+      - button "⚙️ Settings" [ref=f9e54] [cursor=pointer]:
+        - generic [ref=f9e55]: ⚙️
+        - paragraph [ref=f9e56]: Settings
+      - generic [ref=f9e57]:
+        - generic [ref=f9e58]:
+          - generic [ref=f9e59]: A
+          - generic [ref=f9e61]:
+            - paragraph [ref=f9e62]: Admin
+            - paragraph [ref=f9e63]: Didaxis Studio
+        - button [ref=f9e64] [cursor=pointer]:
+          - paragraph [ref=f9e68]: Sign out
+  - main [ref=f9e69]:
+    - generic [ref=f9e70]:
+      - generic [ref=f9e72]:
+        - generic [ref=f9e73]:
+          - heading "Dashboard" [level=2] [ref=f9e74]
+          - paragraph [ref=f9e75]: Welcome to Didaxis Studio
+        - generic [ref=f9e76]: Connected
+      - generic [ref=f9e79]:
+        - generic [ref=f9e80] [cursor=pointer]:
+          - paragraph [ref=f9e86]: "2702"
+          - generic [ref=f9e87]:
+            - paragraph [ref=f9e88]: Programs
+            - paragraph [ref=f9e89]: Manage academic programs
+        - generic [ref=f9e90] [cursor=pointer]:
+          - paragraph [ref=f9e97]: View
+          - generic [ref=f9e98]:
+            - paragraph [ref=f9e99]: Calendar
+            - paragraph [ref=f9e100]: Schedule & drag-drop
+        - generic [ref=f9e101] [cursor=pointer]:
+          - paragraph [ref=f9e107]: Check
+          - generic [ref=f9e108]:
+            - paragraph [ref=f9e109]: Validation
+            - paragraph [ref=f9e110]: Check for conflicts
+        - generic [ref=f9e111] [cursor=pointer]:
+          - paragraph [ref=f9e117]: Open
+          - generic [ref=f9e118]:
+            - paragraph [ref=f9e119]: AI Assist
+            - paragraph [ref=f9e120]: AI-powered editing
+      - generic [ref=f9e121]:
+        - paragraph [ref=f9e124]: Quick Start
+        - paragraph [ref=f9e125]: 1. Create a Program to define your academic program structure.2. Add Courses with session templates and hour requirements.3. Use the Calendar to schedule sessions via drag-and-drop.4. Check Validation for conflicts and constraint violations.5. Use AI Assist to auto-generate schedules or import curricula.
