@@ -1,9 +1,0 @@
-[10773472ms] [ERROR] WebSocket connection to 'wss://test.didaxis.studio/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_INTERNET_DISCONNECTED @ https://test.didaxis.studio/assets/index--ha_Sndr.js:115
-[12931059ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://test.didaxis.studio/api/programs/1efeb2bf-2023-4b21-bff1-5a3f3e875f33/semesters:0
-[13053129ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://test.didaxis.studio/settings:0
-[13053129ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://test.didaxis.studio/settings:0
-[13073280ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://test.didaxis.studio/settings:0
-[13085272ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://test.didaxis.studio/settings:0
-[14135623ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://test.didaxis.studio/api/programs:0
-[14155590ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://test.didaxis.studio/settings:0
-[14155590ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://test.didaxis.studio/settings:0

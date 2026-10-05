@@ -1,5 +1,0 @@
-[  197031ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://test.didaxis.studio/settings:0
-[  197031ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://test.didaxis.studio/settings:0
-[  205986ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://test.didaxis.studio/settings:0
-[  219003ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://test.didaxis.studio/api/programs?limit=5:0
-[  225178ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://test.didaxis.studio/api/programs:0
