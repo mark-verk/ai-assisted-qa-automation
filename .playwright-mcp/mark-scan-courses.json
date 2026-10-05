@@ -1,0 +1,19 @@
+{
+  "url": "https://test.didaxis.studio/programs/948e9db8-7257-423d-ac89-efeb18b66b2d/courses",
+  "headings": [
+    "Course Builder"
+  ],
+  "buttons": [
+    {
+      "name": "+ New Course",
+      "disabled": true,
+      "title": "Select a semester first"
+    },
+    {
+      "name": "Create Course",
+      "disabled": true,
+      "title": "Select a semester first"
+    }
+  ],
+  "main": "Course Builder Define courses and session plans for Web Development 2026 1791161130412 Back to Programs Programs / Web Development 2026 1791161130412 / Courses Courses + New Course 📚 No courses yet. Add the first course for this program. Create Course 🧩 Select a course to manage its session plans."
+}

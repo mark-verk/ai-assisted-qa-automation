@@ -1,8 +1,17 @@
 # Test Plan: DS-1 — Create new academic program
 
 **Feature:** Create new academic program  
-**Role:** Admin user  
-**Fields:** Program Name, Description
+**Role:** Admin user (sign in at `/login` with **Email**, **Password**, **Sign In**)  
+**Programs page:** `/programs` — heading **Programs** (level 2), **+ New Program** button, table with column **Program** (name and description shown in each row)  
+**Related ticket (exploration context):** [DS-2 — Edit existing program details](https://legionqaschool.atlassian.net/browse/DS-2) — each row exposes **Edit {Program Name}** and opens an edit dialog with **Save** (covered in DS-2 tests).
+
+**Create modal (verified on https://test.didaxis.studio):**
+- Dialog title **New Program**; required **Program Name** *, optional **Description**
+- **Create** (disabled when Program Name is empty or whitespace-only), **Cancel**, and header **X** close control
+- Collapsed **Show AI Generation Config** section (Total Program Hours, session defaults, etc.) — not in DS-1 ACs but visible on the form
+- **Escape** closes the dialog without saving
+
+**Fields:** Program Name, Description (primary AC fields)
 
 ---
 
@@ -55,7 +64,8 @@ Scenario: Navigate to program creation form
 **Expected result:**
 - The creation modal closes
 - The Programs list refreshes and displays **Web Development 2026**
-- The new row shows description **Full-stack web development program**
+- The new row shows description **Full-stack web development program** under the name in the **Program** column
+- An **Edit Web Development 2026** control is available on the row (edit flow: DS-2)
 - No error message is displayed
 
 **Priority:** High
@@ -203,41 +213,6 @@ Scenario: Whitespace-only program name is rejected on create
 
 ---
 
-### TC-007
-**Title:** Duplicate program name is rejected during creation
-
-**Preconditions:**
-- Admin user is logged in
-- A program named **Web Development 2026** already exists
-- Program creation form is open
-
-**Steps:**
-1. Enter `Web Development 2026` in **Program Name**
-2. Enter `Another description` in **Description**
-3. Click **Create**
-
-**Expected result:**
-- The form is not submitted successfully
-- An error message indicates the program name already exists
-- The modal remains open with entered values preserved
-- No duplicate program appears in the list
-
-**Priority:** High
-
-**Gherkin:**
-```gherkin
-Scenario: Reject duplicate program name on create
-  Given a program "Web Development 2026" already exists
-  And I am on the program creation form
-  When I fill in Program Name with "Web Development 2026"
-  And I fill in Description with "Another description"
-  And I click Create
-  Then I see an error indicating the name already exists
-  And the program list contains only one "Web Development 2026"
-```
-
----
-
 ### TC-008
 **Title:** Non-admin user cannot access program creation
 
@@ -268,22 +243,57 @@ Scenario: Non-admin cannot create programs
 
 ## Edge Cases
 
+### TC-007
+**Title:** Second program with the same name can be created (duplicate names allowed)
+
+**Preconditions:**
+- Admin user is logged in
+- A program with a given name already exists in the list
+- Program creation form is open
+
+**Steps:**
+1. Enter the same **Program Name** as an existing program
+2. Enter a different **Description**
+3. Click **Create**
+
+**Expected result:**
+- The modal closes
+- The list contains **two** rows that share the same program name (two **Edit {name}** actions with the same accessible name)
+- No client-side duplicate-name error is shown (differs from DS-3 AC intent — document as product gap)
+
+**Priority:** Medium
+
+**Gherkin:**
+```gherkin
+Scenario: Duplicate program name is allowed on create
+  Given a program "Web Development 2026" already exists
+  And I am on the program creation form
+  When I fill in Program Name with "Web Development 2026"
+  And I fill in Description with "Another description"
+  And I click Create
+  Then the modal closes
+  And the program list shows two programs named "Web Development 2026"
+```
+
+---
+
 ### TC-009
-**Title:** Program name at maximum allowed length is accepted
+**Title:** Long program name (255 characters) is accepted
 
 **Preconditions:**
 - Admin user is logged in
 - Program creation form is open
-- Maximum Program Name length is defined (assume 255 characters unless specified otherwise)
+- The Program Name field has no `maxlength` attribute in the UI (verified on test environment)
 
 **Steps:**
-1. Enter a Program Name of exactly 255 characters: `Advanced Cloud Architecture and DevOps Engineering Certification Track for Enterprise Solutions 2026 Edition Extended Program Name To Reach Maximum Allowed Character Limit For Academic Programs In The System Admin Portal Form Validation Testing Purposes Only End`
+1. Enter a Program Name of exactly 255 characters
 2. Enter `Max length validation test` in **Description**
 3. Click **Create**
 
 **Expected result:**
 - The program is created successfully
-- The full name is stored and displayed (or truncated consistently in list view with full name on detail/hover)
+- The modal closes
+- The program appears in the list with **Edit {full name}** available
 - No validation error is shown
 
 **Priority:** Medium
@@ -302,32 +312,31 @@ Scenario: Accept program name at max length
 ---
 
 ### TC-010
-**Title:** Program name exceeding maximum length is rejected
+**Title:** Very long program name (256+ characters) is handled without client-side block
 
 **Preconditions:**
 - Admin user is logged in
 - Program creation form is open
 
 **Steps:**
-1. Enter a Program Name of 256 characters (one over assumed max)
+1. Enter a Program Name of 256+ characters
 2. Enter `Over limit test` in **Description**
-3. Attempt to click **Create**
+3. Click **Create** if enabled
 
 **Expected result:**
-- The form is not submitted
-- A validation message indicates the name exceeds maximum length
-- **Create** is disabled or submission is blocked
+- **Create** is not disabled solely due to length (no HTML `maxlength` on Program Name)
+- Either the program is created and the modal closes, or the server rejects with an inline error — behavior is recorded; no silent data loss
 
-**Priority:** Medium
+**Priority:** Low
 
 **Gherkin:**
 ```gherkin
-Scenario: Reject program name over max length
+Scenario: Long program name without client maxlength
   Given I am on the program creation form
-  When I enter a program name longer than the maximum allowed length
+  When I enter a program name longer than 255 characters
   And I click Create
-  Then the form is not submitted
-  And I see a validation error for Program Name length
+  Then the create action completes or shows a visible validation error
+  And the user can still use Cancel or close to dismiss the modal
 ```
 
 ---
@@ -429,13 +438,69 @@ Scenario: Trim leading and trailing spaces from program name
 
 ---
 
+### TC-014
+**Title:** Escape key closes the creation form without creating a program
+
+**Preconditions:**
+- Admin user is logged in
+- Program creation form is open with unsaved values
+
+**Steps:**
+1. Enter any text in **Program Name** and **Description**
+2. Press **Escape**
+
+**Expected result:**
+- The **New Program** modal closes
+- No new program matching the draft name appears in the list
+
+**Priority:** Medium
+
+**Gherkin:**
+```gherkin
+Scenario: Dismiss create program modal with Escape
+  Given I am on the program creation form
+  When I fill in Program Name with "Draft Program"
+  And I press Escape
+  Then the modal closes
+  And the program list does not show "Draft Program"
+```
+
+---
+
+### TC-015
+**Title:** Create form includes optional AI Generation Config fields
+
+**Preconditions:**
+- Admin user is logged in
+- **New Program** modal is open
+
+**Steps:**
+1. Confirm **Program Name** and **Description** are visible
+2. Observe the **Total Program Hours** label and **Show AI Generation Config** toggle
+
+**Expected result:**
+- **Program Name** and **Description** are present (DS-1 AC fields)
+- **Total Program Hours** and a **Show/Hide AI Generation Config** control are visible on the test environment (extended form beyond ACs)
+
+**Priority:** Low
+
+**Gherkin:**
+```gherkin
+Scenario: Create form shows core and AI config fields
+  Given I am on the program creation form
+  Then I see fields Program Name and Description
+  And I see Total Program Hours and AI Generation Config controls
+```
+
+---
+
 ## Ambiguities and Gaps in ACs
 
 | # | Gap / Ambiguity |
 |---|-----------------|
 | 1 | **Description required?** ACs imply Program Name is required but do not state whether Description is optional. TC-003 assumes it is optional. |
-| 2 | **Maximum field lengths** not specified for Program Name or Description. TC-009–TC-012 assume 255 and 2000 characters respectively. |
-| 3 | **Duplicate name handling** is not in DS-1 ACs but is critical for create flow; covered in TC-007 (also DS-3). |
+| 2 | **Maximum field lengths** not specified; UI has no `maxlength` on Program Name/Description on test env. TC-009–TC-012 probe 255/2000/256+ behavior. |
+| 3 | **Duplicate names:** DS-3 AC expects rejection; **test environment allows duplicate names** (TC-007 documents actual behavior). |
 | 4 | **Whitespace trimming** behavior is defined in DS-3 but affects DS-1 create flow; included here for completeness. |
 | 5 | **Success feedback** beyond modal close and list update is unspecified (toast notification, highlight new row, etc.). |
 | 6 | **Non-admin access control** is not mentioned in ACs but is implied by "logged in as admin." |

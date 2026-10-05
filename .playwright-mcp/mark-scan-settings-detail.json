@@ -1,0 +1,46 @@
+{
+  "hours": [],
+  "dayBoxes": [
+    {
+      "name": "on",
+      "checked": true
+    },
+    {
+      "name": "on",
+      "checked": true
+    },
+    {
+      "name": "on",
+      "checked": true
+    },
+    {
+      "name": "on",
+      "checked": true
+    },
+    {
+      "name": "on",
+      "checked": true
+    },
+    {
+      "name": "on",
+      "checked": true
+    },
+    {
+      "name": "on",
+      "checked": true
+    }
+  ],
+  "tokenSection": "API Tokens Create Token",
+  "dialog": {
+    "text": "Add User Name * Email * Password * Role Create User",
+    "labels": [
+      "Name *",
+      "Email *",
+      "Password *",
+      "Role"
+    ],
+    "buttons": [
+      "Create User"
+    ]
+  }
+}

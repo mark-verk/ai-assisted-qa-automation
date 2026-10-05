@@ -1,0 +1,53 @@
+{
+  "afterSpaces": {
+    "value": "   ",
+    "createDisabled": true
+  },
+  "createAfterClear": true,
+  "uniqueNames": 5733,
+  "rowSampleCount": 6191,
+  "topDupes": [
+    {
+      "name": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+      "count": 47
+    },
+    {
+      "name": "X",
+      "count": 14
+    },
+    {
+      "name": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "count": 7
+    },
+    {
+      "name": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "count": 5
+    },
+    {
+      "name": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "count": 4
+    },
+    {
+      "name": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "count": 4
+    },
+    {
+      "name": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "count": 4
+    },
+    {
+      "name": "MCP exploration description",
+      "count": 3
+    }
+  ],
+  "specialSamples": [
+    "Web Dev & Design — Niveau 2 1791160948086",
+    "Informatique & IA - Niveau 2 1791160604806",
+    "Informatique & IA - Niveau 2 1791160342667",
+    "Informatique & IA - Niveau 2 1791159807663",
+    "Informatique & IA - Niveau 2 1791159242391",
+    "Programme d'Été 2026 1791159242150",
+    "Web Dev & Design — Niveau 2 1791157463094",
+    "Informatique & IA - Niveau 2 1791156360380"
+  ]
+}

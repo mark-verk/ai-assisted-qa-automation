@@ -1,0 +1,127 @@
+- generic [ref=f24e3]:
+  - navigation [ref=f24e4]:
+    - generic [ref=f24e5]:
+      - generic [ref=f24e6]:
+        - img "Didaxis Studio" [ref=f24e7]
+        - generic [ref=f24e8]:
+          - paragraph [ref=f24e9]: Didaxis
+          - paragraph [ref=f24e10]: Studio
+      - generic [ref=f24e11]:
+        - button "📊 Dashboard" [ref=f24e12] [cursor=pointer]:
+          - generic [ref=f24e13]: 📊
+          - paragraph [ref=f24e14]: Dashboard
+        - button "🎓 Programs" [ref=f24e15] [cursor=pointer]:
+          - generic [ref=f24e16]: 🎓
+          - paragraph [ref=f24e17]: Programs
+        - button "📅 Calendar" [ref=f24e18] [cursor=pointer]:
+          - generic [ref=f24e19]: 📅
+          - paragraph [ref=f24e20]: Calendar
+        - button "✅ Validation" [ref=f24e21] [cursor=pointer]:
+          - generic [ref=f24e22]: ✅
+          - paragraph [ref=f24e23]: Validation
+        - button "⚡ Scheduler" [ref=f24e24] [cursor=pointer]:
+          - generic [ref=f24e25]: ⚡
+          - paragraph [ref=f24e26]: Scheduler
+        - button "📤 Export" [ref=f24e27] [cursor=pointer]:
+          - generic [ref=f24e28]: 📤
+          - paragraph [ref=f24e29]: Export
+      - button "⚙️ Settings" [ref=f24e31] [cursor=pointer]:
+        - generic [ref=f24e32]: ⚙️
+        - paragraph [ref=f24e33]: Settings
+      - generic [ref=f24e34]:
+        - generic [ref=f24e35]:
+          - generic [ref=f24e36]: A
+          - generic [ref=f24e38]:
+            - paragraph [ref=f24e39]: Admin
+            - paragraph [ref=f24e40]: Didaxis Studio
+        - button [ref=f24e41] [cursor=pointer]:
+          - paragraph [ref=f24e45]: Sign out
+  - main [ref=f24e46]:
+    - generic [ref=f24e47]:
+      - heading "Settings" [level=2] [ref=f24e51]
+      - generic [ref=f24e53]:
+        - heading "Calendar View" [level=4] [ref=f24e54]
+        - paragraph [ref=f24e55]: Choose which days and hours are visible on the calendar.
+        - generic [ref=f24e56]:
+          - paragraph [ref=f24e57]: Visible Days
+          - generic [ref=f24e58]:
+            - generic [ref=f24e59]:
+              - checkbox "Mon" [checked]
+              - generic [ref=f24e60] [cursor=pointer]: Mon
+            - generic [ref=f24e65]:
+              - checkbox "Tue" [checked]
+              - generic [ref=f24e66] [cursor=pointer]: Tue
+            - generic [ref=f24e71]:
+              - checkbox "Wed" [checked]
+              - generic [ref=f24e72] [cursor=pointer]: Wed
+            - generic [ref=f24e77]:
+              - checkbox "Thu" [checked]
+              - generic [ref=f24e78] [cursor=pointer]: Thu
+            - generic [ref=f24e83]:
+              - checkbox "Fri" [checked]
+              - generic [ref=f24e84] [cursor=pointer]: Fri
+            - generic [ref=f24e89]:
+              - checkbox "Sat" [checked]
+              - generic [ref=f24e90] [cursor=pointer]: Sat
+            - generic [ref=f24e95]:
+              - checkbox "Sun" [checked]
+              - generic [ref=f24e96] [cursor=pointer]: Sun
+        - generic [ref=f24e101]:
+          - paragraph [ref=f24e102]: Visible Hours
+          - generic [ref=f24e103]:
+            - generic [ref=f24e104]:
+              - generic [ref=f24e105]: From
+              - textbox "From" [ref=f24e107] [cursor=pointer]: 07:00
+            - generic [ref=f24e108]:
+              - generic [ref=f24e109]: To
+              - textbox "To" [ref=f24e111] [cursor=pointer]: 24:00
+      - generic [ref=f24e113]:
+        - heading "Account" [level=4] [ref=f24e114]
+        - generic [ref=f24e115]:
+          - generic [ref=f24e116]:
+            - paragraph [ref=f24e117]: Name
+            - paragraph [ref=f24e118]: Admin
+          - generic [ref=f24e119]:
+            - paragraph [ref=f24e120]: Email
+            - paragraph [ref=f24e121]: admin@didaxis.studio
+          - generic [ref=f24e122]:
+            - paragraph [ref=f24e123]: Role
+            - generic [ref=f24e124]: ADMIN
+        - generic [ref=f24e126]:
+          - heading "Change Password" [level=5] [ref=f24e127]
+          - generic [ref=f24e128]:
+            - generic [ref=f24e129]: Current Password
+            - generic [ref=f24e130]:
+              - textbox "Current Password" [ref=f24e132]
+              - button [aria-hidden] [ref=f24e134] [cursor=pointer]
+          - generic [ref=f24e138]:
+            - generic [ref=f24e139]: New Password
+            - paragraph [ref=f24e140]: Minimum 8 characters
+            - generic [ref=f24e141]:
+              - textbox "New Password" [ref=f24e143]
+              - button [aria-hidden] [ref=f24e145] [cursor=pointer]
+          - button "Update Password" [disabled] [ref=f24e149]
+      - generic [ref=f24e152]:
+        - generic [ref=f24e153]:
+          - heading "Users" [level=4] [ref=f24e154]
+          - button "Add User" [ref=f24e155] [cursor=pointer]
+        - table [ref=f24e158]:
+          - rowgroup [ref=f24e159]:
+            - row [ref=f24e160]:
+              - columnheader "Name" [ref=f24e161]
+              - columnheader "Email" [ref=f24e162]
+              - columnheader "Role" [ref=f24e163]
+              - columnheader "Active" [ref=f24e164]
+          - rowgroup
+      - generic [ref=f24e165]:
+        - generic [ref=f24e166]:
+          - heading "API Tokens" [level=4] [ref=f24e167]
+          - button "Create Token" [ref=f24e168] [cursor=pointer]
+        - table [ref=f24e171]:
+          - rowgroup [ref=f24e172]:
+            - row [ref=f24e173]:
+              - columnheader "Name" [ref=f24e174]
+              - columnheader "Last Used" [ref=f24e175]
+              - columnheader "Created" [ref=f24e176]
+              - columnheader [ref=f24e177]
+          - rowgroup

@@ -1,0 +1,49 @@
+{
+  "url": "https://test.didaxis.studio/",
+  "headings": [
+    "H2: Dashboard"
+  ],
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "name": "📊 Dashboard",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "name": "🎓 Programs",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "name": "📅 Calendar",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "name": "✅ Validation",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "name": "⚡ Scheduler",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "name": "📤 Export",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "name": "⚙️ Settings",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "name": "Sign out",
+      "href": null
+    }
+  ],
+  "mainText": "Dashboard Welcome to Didaxis Studio CONNECTED 6191 Programs Manage academic programs View Calendar Schedule & drag-drop Check Validation Check for conflicts Open AI Assist AI-powered editing Quick Start 1. Create a Program to define your academic program structure. 2. Add Courses with session templates and hour requirements. 3. Use the Calendar to schedule sessions via drag-and-drop. 4. Check Validation for conflicts and constraint violations. 5. Use AI Assist to auto-generate schedules or import curricula."
+}

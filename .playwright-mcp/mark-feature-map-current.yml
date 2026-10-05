@@ -1,0 +1,58 @@
+- generic [ref=f18e3]:
+  - navigation [ref=f18e4]:
+    - generic [ref=f18e5]:
+      - generic [ref=f18e6]:
+        - img "Didaxis Studio" [ref=f18e7]
+        - generic [ref=f18e8]:
+          - paragraph [ref=f18e9]: Didaxis
+          - paragraph [ref=f18e10]: Studio
+      - generic [ref=f18e11]:
+        - button "📊 Dashboard" [ref=f18e12] [cursor=pointer]:
+          - generic [ref=f18e13]: 📊
+          - paragraph [ref=f18e14]: Dashboard
+        - button "🎓 Programs" [ref=f18e15] [cursor=pointer]:
+          - generic [ref=f18e16]: 🎓
+          - paragraph [ref=f18e17]: Programs
+        - button "📅 Calendar" [ref=f18e18] [cursor=pointer]:
+          - generic [ref=f18e19]: 📅
+          - paragraph [ref=f18e20]: Calendar
+        - button "✅ Validation" [ref=f18e21] [cursor=pointer]:
+          - generic [ref=f18e22]: ✅
+          - paragraph [ref=f18e23]: Validation
+        - button "⚡ Scheduler" [ref=f18e24] [cursor=pointer]:
+          - generic [ref=f18e25]: ⚡
+          - paragraph [ref=f18e26]: Scheduler
+        - button "📤 Export" [ref=f18e27] [cursor=pointer]:
+          - generic [ref=f18e28]: 📤
+          - paragraph [ref=f18e29]: Export
+      - button "⚙️ Settings" [ref=f18e31] [cursor=pointer]:
+        - generic [ref=f18e32]: ⚙️
+        - paragraph [ref=f18e33]: Settings
+      - generic [ref=f18e34]:
+        - generic [ref=f18e35]:
+          - generic [ref=f18e36]: A
+          - generic [ref=f18e38]:
+            - paragraph [ref=f18e39]: Admin
+            - paragraph [ref=f18e40]: Didaxis Studio
+        - button [ref=f18e41] [cursor=pointer]:
+          - paragraph [ref=f18e45]: Sign out
+  - main [ref=f18e46]:
+    - generic [ref=f18e47]:
+      - generic [ref=f18e50]:
+        - heading "Calendar" [level=2] [ref=f18e51]
+        - paragraph [ref=f18e52]: Schedule sessions with drag-and-drop across month, week, and day views
+      - generic [ref=f18e54]:
+        - generic [ref=f18e55]:
+          - generic [ref=f18e56]: Program
+          - generic [ref=f18e57]:
+            - textbox "Program" [ref=f18e58]:
+              - /placeholder: Select program
+              - text: Informatique & IA - Niveau 2 1791160604806
+            - button [aria-hidden] [ref=f18e60] [cursor=pointer]
+        - generic [ref=f18e63]:
+          - generic [ref=f18e64]: Semester
+          - textbox "Semester" [active] [ref=f18e66]:
+            - /placeholder: Select semester
+      - generic [ref=f18e68]:
+        - paragraph [ref=f18e69]: Select a semester
+        - paragraph [ref=f18e70]: Choose a semester from the dropdown to load its sessions

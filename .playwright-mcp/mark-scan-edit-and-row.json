@@ -1,0 +1,48 @@
+{
+  "editName": "Edit Web Development 2026 1791161130412",
+  "editSnapshot": {
+    "heading": "Edit Program",
+    "buttons": [
+      "▸ Show AI Generation Config",
+      "Cancel",
+      "Save"
+    ],
+    "fields": [
+      {
+        "placeholder": null,
+        "value": "Web Development 2026 1791161130412"
+      },
+      {
+        "placeholder": null,
+        "value": "Updated by User B 1791161130412"
+      },
+      {
+        "placeholder": "e.g. 900",
+        "value": ""
+      },
+      {
+        "placeholder": null,
+        "value": "4"
+      },
+      {
+        "placeholder": null,
+        "value": "3"
+      },
+      {
+        "placeholder": "e.g. Career changers, no CS background",
+        "value": ""
+      },
+      {
+        "placeholder": "e.g. Python, SQL, Machine Learning, Data Visualization",
+        "value": ""
+      }
+    ],
+    "dialogText": "Edit Program Program Name * Description ▸ Show AI Generation Config Total Program Hours Required for AI curriculum generation Default Session Hours Default Exam Hours Target Audience Focus Areas Sync/Async Ratio: 70% sync / 30% async All async 50/50 All sync Cancel Save"
+  },
+  "rowBefore": "Web Development 2026 1791161130412 Updated by User B 1791161130412",
+  "rowAfter": "Web Development 2026 1791161130412 Updated by User B 1791161130412",
+  "rowButtons": [
+    "Edit Web Development 2026 1791161130412",
+    "Delete Web Development 2026 1791161130412"
+  ]
+}

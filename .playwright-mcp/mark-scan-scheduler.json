@@ -1,0 +1,25 @@
+{
+  "url": "https://test.didaxis.studio/scheduler",
+  "headings": [
+    "Auto Scheduler"
+  ],
+  "fields": [
+    {
+      "placeholder": "Select program",
+      "value": "Informatique & IA - Niveau 2 1791160604806",
+      "disabled": false
+    },
+    {
+      "placeholder": "Select semester",
+      "value": "",
+      "disabled": false
+    }
+  ],
+  "buttons": [
+    {
+      "name": "",
+      "disabled": false
+    }
+  ],
+  "main": "Auto Scheduler Generate a deterministic session schedule from course session plans. Preview before applying. Program Semester Select a program and semester to begin The scheduler will generate sessions from your course session plans, respecting all constraints."
+}

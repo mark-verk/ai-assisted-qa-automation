@@ -1,0 +1,12 @@
+{
+  "structure": "<td class=\"m_4e7aa4ef mantine-Table-td\"><p class=\"mantine-focus-auto m_b6d8b162 mantine-Text-root\" data-size=\"sm\" style=\"--text-fz: var(--mantine-font-size-sm); --text-lh: var(--mantine-line-height-sm); font-weight: 600;\">Web Development 2026 1791161130412</p><p class=\"mantine-focus-auto m_b6d8b162 mantine-Text-root\" data-size=\"xs\" data-line-clamp=\"true\" style=\"--text-fz: var(--mantine-font-size-xs); --text-lh: var(--mantine-line-height-xs); --text-line-clamp: 1; color: var(--mantine-color-dimmed);\">Updated by User B 1791161130412</p></td><td class=\"m_4e7aa4ef mantine-Table-td\"><div class=\"m_4081bf90 mantine-Group-root\" style=\"--group-gap: calc(0.125rem * var(--mantine-scale)); --group-align: center; --group-justify: flex-start; --group-wrap: nowrap;\"><button class=\"mantine-focus-auto mantine-active m_8d3f4000 mantine-ActionIcon-root m_87cf2631 mantine-UnstyledButton-root\" data-variant=\"subtle\" data-size=\"sm\" type=\"button\" aria-label=\"Edit Web Development 2026 1791161130412\" style=\"--ai-size: var(--ai-size-sm); --ai-bg: transparent; --ai-hover: var(--mantine-color-blue-light-hover); --ai-color: var(--mantine-color-blue-light-color); --ai-bd: calc(0.0625rem * var(--mantine-scale)) solid transparent;\"><span class=\"m_8d3afb97 mantine-ActionIcon-icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"tabler-icon tabler-icon-pencil \"><path d=\"M4",
+  "clicked": "Web Development 2026 1791161130412",
+  "expanded": true,
+  "extra": [
+    "Manage Courses",
+    "✨ Generate Curriculum",
+    "+ Semester"
+  ],
+  "dialogs": [],
+  "rowText": "Web Development 2026 1791161130412 Updated by User B 1791161130412"
+}

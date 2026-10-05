@@ -1,0 +1,27 @@
+{
+  "url": "https://test.didaxis.studio/validation",
+  "headings": [
+    "Validation"
+  ],
+  "fields": [
+    {
+      "placeholder": "Select a program",
+      "aria": null,
+      "value": "",
+      "disabled": false
+    },
+    {
+      "placeholder": "Select a program first",
+      "aria": null,
+      "value": "",
+      "disabled": true
+    }
+  ],
+  "buttons": [
+    {
+      "name": "Re-validate",
+      "disabled": true
+    }
+  ],
+  "main": "Validation Check schedule for conflicts and constraint violations Select Semester Program Semester Re-validate 📋 No semester selected Select a program and semester above to run validation."
+}
