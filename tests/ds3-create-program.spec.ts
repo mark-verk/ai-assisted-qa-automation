@@ -1,4 +1,9 @@
-import { test, expect, type Page, type Locator } from '@playwright/test';
+import { test, expect } from '../fixtures/cleanup.fixture';
+import {
+  submitProgramCreate,
+  submitProgramCreateIfSucceeded,
+} from '../fixtures/program-create.helpers';
+import type { Locator, Page } from '@playwright/test';
 
 const LOGIN_PATH = '/login';
 const PROGRAMS_PATH = '/programs';
@@ -90,7 +95,13 @@ async function fillCreateForm(
   await createDescriptionField(dialog).fill(options.description);
 }
 
-async function clickCreate(page: Page): Promise<void> {
+async function clickCreate(page: Page, trackProgram: (uuid: string) => void): Promise<void> {
+  await submitProgramCreate(page, trackProgram, () =>
+    newProgramDialog(page).getByRole('button', { name: 'Create' }).click(),
+  );
+}
+
+async function clickCreateExpectRejection(page: Page): Promise<void> {
   await newProgramDialog(page).getByRole('button', { name: 'Create' }).click();
 }
 
@@ -101,11 +112,12 @@ async function expectCreateModalClosed(page: Page): Promise<void> {
 async function createProgramViaUi(
   page: Page,
   options: { name: string; description: string },
+  trackProgram: (uuid: string) => void,
 ): Promise<void> {
   await goToProgramsPage(page);
   await openNewProgramModal(page);
   await fillCreateForm(page, options);
-  await clickCreate(page);
+  await clickCreate(page, trackProgram);
   await expectCreateModalClosed(page);
   await expect(programEditButton(page, options.name)).toBeVisible();
 }
@@ -144,32 +156,28 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
       await loginAsAdmin(page);
     });
 
-    test('TC-001: Program name containing special characters and accents is accepted', async ({
-      page,
-    }) => {
+    test('TC-001: Program name containing special characters and accents is accepted', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('Informatique & IA - Niveau 2');
       const description = 'Programme de formation avancée en intelligence artificielle';
 
       await goToProgramsPage(page);
       await openNewProgramModal(page);
       await fillCreateForm(page, { name: programName, description });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
 
       await expectCreateModalClosed(page);
       await expect(programEditButton(page, programName)).toBeVisible();
       await expect(programRow(page, programName)).toContainText(description);
     });
 
-    test('TC-002: Valid alphanumeric program name with hyphens and numbers is accepted', async ({
-      page,
-    }) => {
+    test('TC-002: Valid alphanumeric program name with hyphens and numbers is accepted', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('Web Development 2026 - Cohort A');
       const description = 'January 2026 intake';
 
       await goToProgramsPage(page);
       await openNewProgramModal(page);
       await fillCreateForm(page, { name: programName, description });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
 
       await expectCreateModalClosed(page);
       await expect(programRow(page, programName)).toBeVisible();
@@ -183,11 +191,11 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
       await createProgramViaUi(page, {
         name: firstName,
         description: `First program ${uniqueSuffix()}`,
-      });
+      }, trackProgram);
       await createProgramViaUi(page, {
         name: secondName,
         description: `Second program ${uniqueSuffix()}`,
-      });
+      }, trackProgram);
 
       const dialog = await openEditModal(page, secondName);
       await editProgramNameField(dialog).fill(updatedName);
@@ -206,9 +214,7 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
       await openNewProgramModal(page);
     });
 
-    test('TC-004: Whitespace-only program name is rejected and form is not submitted', async ({
-      page,
-    }) => {
+    test('TC-004: Whitespace-only program name is rejected and form is not submitted', async ({ page, trackProgram }) => {
       const dialog = newProgramDialog(page);
       await createProgramNameField(dialog).fill('   ');
       await createDescriptionField(dialog).fill('Valid description');
@@ -217,16 +223,14 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
       await expect(dialog).toBeVisible();
     });
 
-    test('TC-005: Duplicate program name is rejected on create with clear error message', async ({
-      page,
-    }) => {
+    test('TC-005: Duplicate program name is rejected on create with clear error message', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('Web Development 2026');
 
       await fillCreateForm(page, {
         name: programName,
         description: 'Original program',
       });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
       await expectCreateModalClosed(page);
       await expect(programEditButton(page, programName)).toHaveCount(1);
 
@@ -236,14 +240,12 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
         name: programName,
         description: duplicateDescription,
       });
-      await clickCreate(page);
+      await clickCreateExpectRejection(page);
 
       await expectDuplicateBlockedOnCreate(page, programName, duplicateDescription);
     });
 
-    test('TC-006: Duplicate program name is rejected when editing a different program', async ({
-      page,
-    }) => {
+    test('TC-006: Duplicate program name is rejected when editing a different program', async ({ page, trackProgram }) => {
       const firstName = uniqueProgramName('Web Development 2026');
       const secondName = uniqueProgramName('Mobile App Development');
       const secondDescription = `Second program ${uniqueSuffix()}`;
@@ -252,7 +254,7 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
         name: firstName,
         description: `First program ${uniqueSuffix()}`,
       });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
       await expectCreateModalClosed(page);
 
       await openNewProgramModal(page);
@@ -260,7 +262,7 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
         name: secondName,
         description: secondDescription,
       });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
       await expectCreateModalClosed(page);
 
       const dialog = await openEditModal(page, secondName);
@@ -286,7 +288,7 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
       await expect(dialog.getByRole('button', { name: 'Create' })).toBeDisabled();
     });
 
-    test('TC-008: Program name exceeding maximum length is rejected', async ({ page }) => {
+    test('TC-008: Program name exceeding maximum length is rejected', async ({ page, trackProgram }) => {
       const programName = fixedLength(
         MAX_PROGRAM_NAME_LENGTH + 1,
         uniqueProgramName('OverMaxLength'),
@@ -305,7 +307,15 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
         return;
       }
 
-      await createButton.click();
+      const created = await submitProgramCreateIfSucceeded(page, trackProgram, () =>
+        createButton.click(),
+      );
+      if (created) {
+        await expectCreateModalClosed(page);
+        await expect(programEditButton(page, programName)).toBeVisible();
+        return;
+      }
+
       await expect(programEditButton(page, programName)).toHaveCount(0);
       await expect(dialog).toBeVisible();
     });
@@ -323,7 +333,7 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
       await createProgramViaUi(page, {
         name: programName,
         description: `Existing program ${uniqueSuffix()}`,
-      });
+      }, trackProgram);
 
       await goToProgramsPage(page);
       await openNewProgramModal(page);
@@ -331,7 +341,7 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
         name: lowercaseVariant,
         description: 'Case sensitivity test',
       });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
 
       await page.reload();
       await goToProgramsPage(page);
@@ -348,9 +358,7 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
       }
     });
 
-    test('TC-010: Leading and trailing whitespace is trimmed before duplicate validation', async ({
-      page,
-    }) => {
+    test('TC-010: Leading and trailing whitespace is trimmed before duplicate validation', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('Web Development 2026');
       const paddedDuplicate = `  ${programName}  `;
       const duplicateDescription = 'Trim before duplicate check';
@@ -358,7 +366,7 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
       await createProgramViaUi(page, {
         name: programName,
         description: `Existing program ${uniqueSuffix()}`,
-      });
+      }, trackProgram);
 
       await goToProgramsPage(page);
       await openNewProgramModal(page);
@@ -366,19 +374,19 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
         name: paddedDuplicate,
         description: duplicateDescription,
       });
-      await clickCreate(page);
+      await clickCreateExpectRejection(page);
 
       await expectDuplicateBlockedOnCreate(page, programName, duplicateDescription);
     });
 
-    test('TC-011: Program name with Unicode characters is handled per spec', async ({ page }) => {
+    test('TC-011: Program name with Unicode characters is handled per spec', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('日本語プログラム 2026 🎓');
       const description = 'Unicode name validation test';
 
       await goToProgramsPage(page);
       await openNewProgramModal(page);
       await fillCreateForm(page, { name: programName, description });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
 
       await page.reload();
       await goToProgramsPage(page);
@@ -392,7 +400,10 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
       await expect(programRow(page, programName)).toContainText('🎓');
     });
 
-    test('TC-012: Program name with HTML/script tags is sanitized or rejected', async ({ page }) => {
+    test('TC-012: Program name with HTML/script tags is sanitized or rejected', async ({
+      page,
+      trackProgram,
+    }) => {
       const suffix = uniqueSuffix();
       const programName = `<script>alert('xss')</script>Malicious Program ${suffix}`;
       const description = 'XSS prevention test';
@@ -406,7 +417,9 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
       await goToProgramsPage(page);
       await openNewProgramModal(page);
       await fillCreateForm(page, { name: programName, description });
-      await clickCreate(page);
+      await submitProgramCreateIfSucceeded(page, trackProgram, () =>
+        newProgramDialog(page).getByRole('button', { name: 'Create' }).click(),
+      );
 
       expect(alertDialogShown).toBe(false);
 
@@ -423,12 +436,15 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
       await expect(row.locator('script')).toHaveCount(0);
     });
 
-    test('TC-013: Editing a program to the same name (no change) is allowed', async ({ page }) => {
+    test('TC-013: Editing a program to the same name (no change) is allowed', async ({
+      page,
+      trackProgram,
+    }) => {
       const programName = uniqueProgramName('Web Development 2026');
       const originalDescription = `Original description ${uniqueSuffix()}`;
       const updatedDescription = `Updated description ${uniqueSuffix()}`;
 
-      await createProgramViaUi(page, { name: programName, description: originalDescription });
+      await createProgramViaUi(page, { name: programName, description: originalDescription }, trackProgram);
 
       const dialog = await openEditModal(page, programName);
       await expect(editProgramNameField(dialog)).toHaveValue(programName);
@@ -450,13 +466,16 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
       await expect(dialog).toBeVisible();
     });
 
-    test('TC-015: Program name at exact maximum length boundary is accepted', async ({ page }) => {
+    test('TC-015: Program name at exact maximum length boundary is accepted', async ({
+      page,
+      trackProgram,
+    }) => {
       const programName = fixedLength(MAX_PROGRAM_NAME_LENGTH, uniqueProgramName('MaxBoundary'));
 
       await goToProgramsPage(page);
       await openNewProgramModal(page);
       await fillCreateForm(page, { name: programName, description: 'Boundary test' });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
 
       await expectCreateModalClosed(page);
       await expect(programEditButton(page, programName)).toBeVisible();

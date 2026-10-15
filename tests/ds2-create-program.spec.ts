@@ -1,4 +1,6 @@
-import { test, expect, type Page, type Locator } from '@playwright/test';
+import { test, expect } from '../fixtures/cleanup.fixture';
+import { submitProgramCreate } from '../fixtures/program-create.helpers';
+import type { Locator, Page } from '@playwright/test';
 
 const LOGIN_PATH = '/login';
 const PROGRAMS_PATH = '/programs';
@@ -108,8 +110,10 @@ async function fillCreateForm(
   await createDescriptionField(dialog).fill(options.description);
 }
 
-async function clickCreate(page: Page): Promise<void> {
-  await newProgramDialog(page).getByRole('button', { name: 'Create' }).click();
+async function clickCreate(page: Page, trackProgram: (uuid: string) => void): Promise<void> {
+  await submitProgramCreate(page, trackProgram, () =>
+    newProgramDialog(page).getByRole('button', { name: 'Create' }).click(),
+  );
 }
 
 async function expectCreateModalClosed(page: Page): Promise<void> {
@@ -119,11 +123,12 @@ async function expectCreateModalClosed(page: Page): Promise<void> {
 async function createProgramViaUi(
   page: Page,
   options: { name: string; description: string },
+  trackProgram: (uuid: string) => void,
 ): Promise<void> {
   await goToProgramsPage(page);
   await openNewProgramModal(page);
   await fillCreateForm(page, options);
-  await clickCreate(page);
+  await clickCreate(page, trackProgram);
   await expectCreateModalClosed(page);
   await expect(programEditButton(page, options.name)).toBeVisible();
 }
@@ -166,11 +171,12 @@ test.describe('DS-2 — Edit existing program details', () => {
 
     test('TC-001: Edit form opens pre-populated with the selected program\'s current data', async ({
       page,
+      trackProgram,
     }) => {
       const programName = uniqueProgramName('Web Development 2026');
       const description = `Full-stack web development program ${uniqueSuffix()}`;
 
-      await createProgramViaUi(page, { name: programName, description });
+      await createProgramViaUi(page, { name: programName, description }, trackProgram);
       const dialog = await openEditModal(page, programName);
 
       await expect(editProgramNameField(dialog)).toHaveValue(programName);
@@ -179,14 +185,12 @@ test.describe('DS-2 — Edit existing program details', () => {
       await expect(dialog.getByRole('button', { name: 'Cancel' })).toBeVisible();
     });
 
-    test('TC-002: Updated program name is reflected immediately in the program list', async ({
-      page,
-    }) => {
+    test('TC-002: Updated program name is reflected immediately in the program list', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('Web Development 2026');
       const updatedName = uniqueProgramName('Web Development 2026 - Updated');
       const description = `Original description ${uniqueSuffix()}`;
 
-      await createProgramViaUi(page, { name: programName, description });
+      await createProgramViaUi(page, { name: programName, description }, trackProgram);
       const dialog = await openEditModal(page, programName);
       await editProgramNameField(dialog).fill(updatedName);
       await clickSave(page);
@@ -197,9 +201,7 @@ test.describe('DS-2 — Edit existing program details', () => {
       await expect(programRow(page, updatedName)).toContainText(description);
     });
 
-    test('TC-003: Unchanged fields are preserved when only Description is edited', async ({
-      page,
-    }) => {
+    test('TC-003: Unchanged fields are preserved when only Description is edited', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('Web Development 2026');
       const originalDescription = `Full-stack web development program ${uniqueSuffix()}`;
       const updatedDescription = `Updated full-stack curriculum with React and Node.js modules ${uniqueSuffix()}`;
@@ -207,7 +209,7 @@ test.describe('DS-2 — Edit existing program details', () => {
       await createProgramViaUi(page, {
         name: programName,
         description: originalDescription,
-      });
+      }, trackProgram);
 
       const dialog = await openEditModal(page, programName);
       await editDescriptionField(dialog).fill(updatedDescription);
@@ -218,9 +220,7 @@ test.describe('DS-2 — Edit existing program details', () => {
       await expect(programRow(page, programName)).toContainText(updatedDescription);
     });
 
-    test('TC-004: Both Program Name and Description can be updated in a single save', async ({
-      page,
-    }) => {
+    test('TC-004: Both Program Name and Description can be updated in a single save', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('UX Design Foundations');
       const updatedName = uniqueProgramName('UX Design Foundations - Professional Track');
       const updatedDescription = `Advanced UX research, prototyping, and usability testing ${uniqueSuffix()}`;
@@ -228,7 +228,7 @@ test.describe('DS-2 — Edit existing program details', () => {
       await createProgramViaUi(page, {
         name: programName,
         description: `Introductory UX course ${uniqueSuffix()}`,
-      });
+      }, trackProgram);
 
       const dialog = await openEditModal(page, programName);
       await editProgramNameField(dialog).fill(updatedName);
@@ -251,7 +251,7 @@ test.describe('DS-2 — Edit existing program details', () => {
       const programName = uniqueProgramName('Web Development 2026');
       const description = `Description ${uniqueSuffix()}`;
 
-      await createProgramViaUi(page, { name: programName, description });
+      await createProgramViaUi(page, { name: programName, description }, trackProgram);
       const dialog = await openEditModal(page, programName);
       await editProgramNameField(dialog).fill('');
 
@@ -262,13 +262,11 @@ test.describe('DS-2 — Edit existing program details', () => {
       await expect(programEditButton(page, programName)).toBeVisible();
     });
 
-    test('TC-006: Cancel discards unsaved edits and preserves original program data', async ({
-      page,
-    }) => {
+    test('TC-006: Cancel discards unsaved edits and preserves original program data', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('Web Development 2026');
       const description = `Full-stack web development program ${uniqueSuffix()}`;
 
-      await createProgramViaUi(page, { name: programName, description });
+      await createProgramViaUi(page, { name: programName, description }, trackProgram);
       const dialog = await openEditModal(page, programName);
       await editProgramNameField(dialog).fill(uniqueProgramName('Web Development 2026 - Draft Change'));
       await editDescriptionField(dialog).fill('Unsaved draft description');
@@ -286,11 +284,11 @@ test.describe('DS-2 — Edit existing program details', () => {
       await createProgramViaUi(page, {
         name: firstName,
         description: `First program ${uniqueSuffix()}`,
-      });
+      }, trackProgram);
       await createProgramViaUi(page, {
         name: secondName,
         description: secondDescription,
-      });
+      }, trackProgram);
 
       const dialog = await openEditModal(page, secondName);
       await editProgramNameField(dialog).fill(firstName);
@@ -346,7 +344,7 @@ test.describe('DS-2 — Edit existing program details', () => {
       await createProgramViaUi(page, {
         name: programName,
         description: `Unchanged description ${uniqueSuffix()}`,
-      });
+      }, trackProgram);
 
       await openEditModal(page, programName);
       await clickSave(page);
@@ -361,7 +359,7 @@ test.describe('DS-2 — Edit existing program details', () => {
       await createProgramViaUi(page, {
         name: programName,
         description: `Description ${uniqueSuffix()}`,
-      });
+      }, trackProgram);
 
       const dialog = await openEditModal(page, programName);
       await editProgramNameField(dialog).fill('     ');
@@ -377,7 +375,7 @@ test.describe('DS-2 — Edit existing program details', () => {
       await createProgramViaUi(page, {
         name: programName,
         description: `Description ${uniqueSuffix()}`,
-      });
+      }, trackProgram);
 
       const dialog = await openEditModal(page, programName);
       await editProgramNameField(dialog).fill(specialName);
@@ -391,7 +389,7 @@ test.describe('DS-2 — Edit existing program details', () => {
       const programName = uniqueProgramName('Web Development 2026');
       const description = `Non-empty description ${uniqueSuffix()}`;
 
-      await createProgramViaUi(page, { name: programName, description });
+      await createProgramViaUi(page, { name: programName, description }, trackProgram);
       const dialog = await openEditModal(page, programName);
       await editDescriptionField(dialog).fill('');
       await clickSave(page);
@@ -408,9 +406,7 @@ test.describe('DS-2 — Edit existing program details', () => {
       }
     });
 
-    test('TC-013: Leading and trailing spaces in edited name are trimmed on save', async ({
-      page,
-    }) => {
+    test('TC-013: Leading and trailing spaces in edited name are trimmed on save', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('Web Development 2026');
       const trimmedName = uniqueProgramName('Cloud Computing Certificate');
       const paddedName = `  ${trimmedName}  `;
@@ -418,7 +414,7 @@ test.describe('DS-2 — Edit existing program details', () => {
       await createProgramViaUi(page, {
         name: programName,
         description: `Description ${uniqueSuffix()}`,
-      });
+      }, trackProgram);
 
       const dialog = await openEditModal(page, programName);
       await editProgramNameField(dialog).fill(paddedName);
@@ -429,16 +425,14 @@ test.describe('DS-2 — Edit existing program details', () => {
       await expect(programRow(page, trimmedName).locator('p').first()).toHaveText(trimmedName);
     });
 
-    test('TC-014: Program name at maximum length boundary is accepted on edit', async ({
-      page,
-    }) => {
+    test('TC-014: Program name at maximum length boundary is accepted on edit', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('Short Name Program');
       const maxName = fixedLength(MAX_PROGRAM_NAME_LENGTH, uniqueProgramName('MaxLen255Edit'));
 
       await createProgramViaUi(page, {
         name: programName,
         description: `Description ${uniqueSuffix()}`,
-      });
+      }, trackProgram);
 
       const dialog = await openEditModal(page, programName);
       await editProgramNameField(dialog).fill(maxName);

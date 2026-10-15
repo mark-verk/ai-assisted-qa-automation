@@ -1,4 +1,6 @@
-import { test, expect, type Page, type Locator } from '@playwright/test';
+import { test, expect } from '../fixtures/cleanup.fixture';
+import { submitProgramCreate } from '../fixtures/program-create.helpers';
+import type { Locator, Page } from '@playwright/test';
 
 const LOGIN_PATH = '/login';
 const PROGRAMS_PATH = '/programs';
@@ -76,6 +78,7 @@ async function openNewProgramModal(page: Page): Promise<Locator> {
 async function createProgramViaUi(
   page: Page,
   options: { name: string; description?: string },
+  trackProgram: (uuid: string) => void,
 ): Promise<void> {
   await goToProgramsPage(page);
   await openNewProgramModal(page);
@@ -84,7 +87,9 @@ async function createProgramViaUi(
   if (options.description !== undefined) {
     await dialog.getByLabel('Description').fill(options.description);
   }
-  await dialog.getByRole('button', { name: 'Create' }).click();
+  await submitProgramCreate(page, trackProgram, () =>
+    dialog.getByRole('button', { name: 'Create' }).click(),
+  );
   await expect(newProgramDialog(page)).toBeHidden();
   await expect(programEditButton(page, options.name)).toBeVisible();
 }
@@ -92,6 +97,7 @@ async function createProgramViaUi(
 async function createProgramOnCurrentPage(
   page: Page,
   options: { name: string; description?: string },
+  trackProgram: (uuid: string) => void,
 ): Promise<void> {
   await openNewProgramModal(page);
   const dialog = newProgramDialog(page);
@@ -99,7 +105,9 @@ async function createProgramOnCurrentPage(
   if (options.description !== undefined) {
     await dialog.getByLabel('Description').fill(options.description);
   }
-  await dialog.getByRole('button', { name: 'Create' }).click();
+  await submitProgramCreate(page, trackProgram, () =>
+    dialog.getByRole('button', { name: 'Create' }).click(),
+  );
   await expect(newProgramDialog(page)).toBeHidden();
 }
 
@@ -146,6 +154,7 @@ test.describe('DS-5 — Program list filtering and display', () => {
 
     test('TC-001: Program list displays each program\'s name and description', async ({
       page,
+      trackProgram,
     }) => {
       const programs = [
         {
@@ -163,7 +172,7 @@ test.describe('DS-5 — Program list filtering and display', () => {
       ];
 
       for (const program of programs) {
-        await createProgramViaUi(page, program);
+        await createProgramViaUi(page, program, trackProgram);
       }
 
       await goToProgramsPage(page);
@@ -187,27 +196,25 @@ test.describe('DS-5 — Program list filtering and display', () => {
       );
     });
 
-    test('TC-003: Newly created program appears in the list without manual refresh', async ({
-      page,
-    }) => {
+    test('TC-003: Newly created program appears in the list without manual refresh', async ({ page, trackProgram }) => {
       await goToProgramsPage(page);
 
       const programName = uniqueProgramName('Cloud Computing Certificate');
       const description = 'AWS and Azure fundamentals';
 
-      await createProgramOnCurrentPage(page, { name: programName, description });
+      await createProgramOnCurrentPage(page, { name: programName, description }, trackProgram);
 
       await expect(programRow(page, programName)).toBeVisible();
       await expect(programRow(page, programName)).toContainText(description);
       await expect(programEditButton(page, programName)).toBeVisible();
     });
 
-    test('TC-004: List reflects program edits immediately after save', async ({ page }) => {
+    test('TC-004: List reflects program edits immediately after save', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('Web Development 2026');
       await createProgramViaUi(page, {
         name: programName,
         description: 'Full-stack web development program',
-      });
+      }, trackProgram);
 
       const updatedDescription = 'Updated curriculum for 2026';
       const dialog = await openEditModal(page, programName);
@@ -224,9 +231,7 @@ test.describe('DS-5 — Program list filtering and display', () => {
   });
 
   test.describe('Negative flows', () => {
-    test('TC-005: Programs page is not accessible to unauthenticated users', async ({
-      page,
-    }) => {
+    test('TC-005: Programs page is not accessible to unauthenticated users', async ({ page, trackProgram }) => {
       await page.goto(PROGRAMS_PATH);
 
       await expect(page).toHaveURL(/\/login/);
@@ -236,10 +241,7 @@ test.describe('DS-5 — Program list filtering and display', () => {
       await expect(newProgramButton(page)).toHaveCount(0);
     });
 
-    test('TC-006: Non-admin user sees restricted view or is denied access to Programs page', async ({
-      page,
-      browser,
-    }) => {
+    test('TC-006: Non-admin user sees restricted view or is denied access to Programs page', async ({ page, browser, trackProgram }) => {
       const email = process.env.DIDAXIS_NON_ADMIN_EMAIL;
       const password = process.env.DIDAXIS_NON_ADMIN_PASSWORD;
       test.skip(
@@ -252,7 +254,7 @@ test.describe('DS-5 — Program list filtering and display', () => {
       await createProgramViaUi(page, {
         name: programName,
         description: `Visible only with permitted access ${uniqueSuffix()}`,
-      });
+      }, trackProgram);
 
       const nonAdminContext = await browser.newContext({
         baseURL: process.env.DIDAXIS_URL,
@@ -282,9 +284,7 @@ test.describe('DS-5 — Program list filtering and display', () => {
       await nonAdminContext.close();
     });
 
-    test('TC-007: Program list does not display stale data after failed load', async ({
-      page,
-    }) => {
+    test('TC-007: Program list does not display stale data after failed load', async ({ page, trackProgram }) => {
       await loginAsAdmin(page);
 
       await page.route('**/*', async (route) => {
@@ -321,11 +321,9 @@ test.describe('DS-5 — Program list filtering and display', () => {
       await loginAsAdmin(page);
     });
 
-    test('TC-008: Program with empty description displays appropriate placeholder in list', async ({
-      page,
-    }) => {
+    test('TC-008: Program with empty description displays appropriate placeholder in list', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('Minimal Program');
-      await createProgramViaUi(page, { name: programName, description: '' });
+      await createProgramViaUi(page, { name: programName, description: '' }, trackProgram);
 
       const row = programRow(page, programName);
       await expect(row).toBeVisible();
@@ -339,15 +337,13 @@ test.describe('DS-5 — Program list filtering and display', () => {
       ).toBeTruthy();
     });
 
-    test('TC-009: Long program names and descriptions are displayed without breaking layout', async ({
-      page,
-    }) => {
+    test('TC-009: Long program names and descriptions are displayed without breaking layout', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName(
         'Advanced Enterprise Cloud Architecture DevOps Engineering and Site Reliability',
       );
       const description = `Enterprise cloud architecture covering AWS, Azure, Kubernetes, observability, incident response, and SRE practices. ${'Detailed curriculum module. '.repeat(20)}`;
 
-      await createProgramViaUi(page, { name: programName, description });
+      await createProgramViaUi(page, { name: programName, description }, trackProgram);
 
       const row = programRow(page, programName);
       await expect(row).toBeVisible();
@@ -362,13 +358,11 @@ test.describe('DS-5 — Program list filtering and display', () => {
       expect(rowBox!.width).toBeLessThanOrEqual(tableBox!.width + 2);
     });
 
-    test('TC-010: Program names with special characters render correctly in the list', async ({
-      page,
-    }) => {
+    test('TC-010: Program names with special characters render correctly in the list', async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('Informatique & IA - Niveau 2');
       const description = 'Programme bilingue avec caractères spéciaux';
 
-      await createProgramViaUi(page, { name: programName, description });
+      await createProgramViaUi(page, { name: programName, description }, trackProgram);
 
       const row = programRow(page, programName);
       await expect(row).toBeVisible();
@@ -377,9 +371,7 @@ test.describe('DS-5 — Program list filtering and display', () => {
       await expect(programEditButton(page, programName)).toBeVisible();
     });
 
-    test('TC-011: List handles large number of programs with pagination or scrolling', async ({
-      page,
-    }) => {
+    test('TC-011: List handles large number of programs with pagination or scrolling', async ({ page, trackProgram }) => {
       await goToProgramsPage(page);
       const rowCount = await programsTable(page).getByRole('row').count();
       test.skip(
@@ -406,7 +398,7 @@ test.describe('DS-5 — Program list filtering and display', () => {
       );
     });
 
-    test('TC-013: List sort order is consistent and predictable', async ({ page }) => {
+    test('TC-013: List sort order is consistent and predictable', async ({ page, trackProgram }) => {
       const suffix = uniqueSuffix();
       const programs = [
         { name: `AAA Alpha Program ${suffix}`, description: 'Sort fixture alpha' },
@@ -415,7 +407,7 @@ test.describe('DS-5 — Program list filtering and display', () => {
       ];
 
       for (const program of programs) {
-        await createProgramViaUi(page, program);
+        await createProgramViaUi(page, program, trackProgram);
       }
 
       await goToProgramsPage(page);
@@ -439,20 +431,18 @@ test.describe('DS-5 — Program list filtering and display', () => {
       expect(secondOrder).toEqual(firstOrder);
     });
 
-    test('TC-014: Deleted program is removed from list without page refresh', async ({
-      page,
-    }) => {
+    test('TC-014: Deleted program is removed from list without page refresh', async ({ page, trackProgram }) => {
       const deletedName = uniqueProgramName('Test Program');
       const remainingName = uniqueProgramName('Web Development 2026');
 
       await createProgramViaUi(page, {
         name: remainingName,
         description: 'Full-stack web development program',
-      });
+      }, trackProgram);
       await createProgramOnCurrentPage(page, {
         name: deletedName,
         description: `Program used for list-delete testing ${uniqueSuffix()}`,
-      });
+      }, trackProgram);
 
       await handleDeleteConfirm(page, deletedName, 'accept');
 
