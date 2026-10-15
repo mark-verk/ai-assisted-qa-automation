@@ -8,6 +8,7 @@
     "test:ui": "playwright test --ui",
     "test:todomvc": "playwright test tests/todoMVC.spec.ts",
     "test:ds1": "playwright test tests/ds1-create-program.spec.ts --workers=1",
+    "test:purge-programs": "node manual/run-purge.js",
     "report": "playwright show-report"
   },
   "repository": {

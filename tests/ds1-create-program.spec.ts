@@ -1,4 +1,5 @@
-import { test, expect, type Page, type Locator } from '@playwright/test';
+import { test, expect } from '../fixtures/cleanup.fixture';
+import type { Locator, Page, Response } from '@playwright/test';
 
 const LOGIN_PATH = '/login';
 const PROGRAMS_PATH = '/programs';
@@ -99,8 +100,31 @@ async function fillProgramForm(
   }
 }
 
-async function clickCreate(page: Page): Promise<void> {
+function isProgramCreate(response: Response): boolean {
+  if (response.request().method() !== 'POST') return false;
+  try {
+    return new URL(response.url()).pathname.replace(/\/$/, '') === '/api/programs';
+  } catch {
+    return false;
+  }
+}
+
+async function trackCreatedProgram(
+  response: Response,
+  trackProgram: (uuid: string) => void,
+): Promise<void> {
+  const body = await response.json();
+  const id = body?.data?.id;
+  expect(typeof id, 'Create program response did not include data.id').toBe('string');
+  trackProgram(id);
+}
+
+async function clickCreate(page: Page, trackProgram: (uuid: string) => void): Promise<void> {
+  const createResponse = page.waitForResponse(isProgramCreate);
   await newProgramDialog(page).getByRole('button', { name: 'Create' }).click();
+  const response = await createResponse;
+  expect(response.ok(), `Create program failed with ${response.status()}`).toBeTruthy();
+  await trackCreatedProgram(response, trackProgram);
 }
 
 async function expectModalClosed(page: Page): Promise<void> {
@@ -126,7 +150,10 @@ test.describe('DS-1 — Create new academic program', () => {
       await expect(dialog.getByRole('banner').getByRole('button')).toBeVisible();
     });
 
-    test('TC-002: New program appears in the list after successful creation', async ({ page }) => {
+    test('TC-002: New program appears in the list after successful creation', async ({
+      page,
+      trackProgram,
+    }) => {
       const programName = uniqueProgramName('Web Development 2026');
       const description = `Full-stack web development program ${uniqueSuffix()}`;
 
@@ -134,7 +161,7 @@ test.describe('DS-1 — Create new academic program', () => {
       await waitForProgramsList(page);
       await openNewProgramModal(page);
       await fillProgramForm(page, { name: programName, description });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
 
       await expectModalClosed(page);
       await expect(programEditButton(page, programName)).toBeVisible({ timeout: 30_000 });
@@ -143,13 +170,14 @@ test.describe('DS-1 — Create new academic program', () => {
 
     test('TC-003: Program can be created with an empty Description when Program Name is provided', async ({
       page,
+      trackProgram,
     }) => {
       const programName = uniqueProgramName('Data Science Fundamentals');
 
       await goToProgramsPage(page);
       await openNewProgramModal(page);
       await fillProgramForm(page, { name: programName, description: '' });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
 
       await expectModalClosed(page);
       await expect(programEditButton(page, programName)).toBeVisible();
@@ -226,7 +254,10 @@ test.describe('DS-1 — Create new academic program', () => {
       await openNewProgramModal(page);
     });
 
-    test('TC-009: Program name at maximum allowed length is accepted', async ({ page }) => {
+    test('TC-009: Program name at maximum allowed length is accepted', async ({
+      page,
+      trackProgram,
+    }) => {
       const seed = uniqueProgramName('MaxLen255');
       const programName = fixedLength(MAX_PROGRAM_NAME_LENGTH, seed);
 
@@ -234,13 +265,16 @@ test.describe('DS-1 — Create new academic program', () => {
         name: programName,
         description: 'Max length validation test',
       });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
 
       await expectModalClosed(page);
       await expect(programEditButton(page, programName)).toBeVisible();
     });
 
-    test('TC-010: Very long program name has no client-side maxlength block', async ({ page }) => {
+    test('TC-010: Very long program name has no client-side maxlength block', async ({
+      page,
+      trackProgram,
+    }) => {
       const seed = uniqueProgramName('OverMax');
       const programName = fixedLength(MAX_PROGRAM_NAME_LENGTH + 1, seed);
 
@@ -253,7 +287,15 @@ test.describe('DS-1 — Create new academic program', () => {
       const createButton = dialog.getByRole('button', { name: 'Create' });
       await expect(createButton).toBeEnabled();
 
+      const createResponse = page
+        .waitForResponse(isProgramCreate, { timeout: 15_000 })
+        .catch(() => null);
       await createButton.click();
+      const response = await createResponse;
+      if (response?.ok()) {
+        await trackCreatedProgram(response, trackProgram);
+      }
+
       const created = await programEditButton(page, programName)
         .isVisible({ timeout: 5_000 })
         .catch(() => false);
@@ -266,14 +308,17 @@ test.describe('DS-1 — Create new academic program', () => {
       await expect(dialog).toBeVisible();
     });
 
-    test('TC-007: Duplicate program name is allowed during creation', async ({ page }) => {
+    test('TC-007: Duplicate program name is allowed during creation', async ({
+      page,
+      trackProgram,
+    }) => {
       const programName = uniqueProgramName('Web Development 2026');
 
       await fillProgramForm(page, {
         name: programName,
         description: 'First program description',
       });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
       await expectModalClosed(page);
       await expect(programEditButton(page, programName)).toHaveCount(1);
 
@@ -282,24 +327,30 @@ test.describe('DS-1 — Create new academic program', () => {
         name: programName,
         description: 'Another description',
       });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
 
       await expectModalClosed(page);
       await expect(programEditButton(page, programName)).toHaveCount(2);
     });
 
-    test('TC-011: Program name with special characters is accepted', async ({ page }) => {
+    test('TC-011: Program name with special characters is accepted', async ({
+      page,
+      trackProgram,
+    }) => {
       const programName = uniqueProgramName('Informatique & IA - Niveau 2');
       const description = 'Programme bilingue avec caractères spéciaux';
 
       await fillProgramForm(page, { name: programName, description });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
 
       await expectModalClosed(page);
       await expect(programEditButton(page, programName)).toBeVisible();
     });
 
-    test('TC-012: Description at maximum allowed length is accepted', async ({ page }) => {
+    test('TC-012: Description at maximum allowed length is accepted', async ({
+      page,
+      trackProgram,
+    }) => {
       const programName = uniqueProgramName('Cybersecurity Essentials');
       const description = fixedLength(
         MAX_DESCRIPTION_LENGTH,
@@ -307,7 +358,7 @@ test.describe('DS-1 — Create new academic program', () => {
       );
 
       await fillProgramForm(page, { name: programName, description });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
 
       await expectModalClosed(page);
       await expect(programEditButton(page, programName)).toBeVisible();
@@ -315,6 +366,7 @@ test.describe('DS-1 — Create new academic program', () => {
 
     test('TC-013: Leading and trailing spaces in Program Name are trimmed on save', async ({
       page,
+      trackProgram,
     }) => {
       const trimmedName = uniqueProgramName('Mobile App Development');
       const paddedName = `  ${trimmedName}  `;
@@ -323,7 +375,7 @@ test.describe('DS-1 — Create new academic program', () => {
         name: paddedName,
         description: 'iOS and Android development track',
       });
-      await clickCreate(page);
+      await clickCreate(page, trackProgram);
 
       await expectModalClosed(page);
       await expect(programEditButton(page, trimmedName)).toBeVisible();
