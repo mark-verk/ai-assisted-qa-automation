@@ -7,7 +7,7 @@
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:todomvc": "playwright test tests/todoMVC.spec.ts",
-    "test:ds1": "playwright test tests/ds1-create-program.spec.ts --workers=1",
+    "test:ds1": "playwright test tests/ds1-create-new-academic-program.spec.ts --workers=1",
     "test:purge-programs": "node manual/run-purge.js",
     "report": "playwright show-report"
   },
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/mark-verk/ai-assisted-qa-automation#readme",
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.63.0",
     "@types/node": "^26.6.1"
   },

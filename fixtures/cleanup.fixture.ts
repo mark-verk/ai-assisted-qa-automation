@@ -36,21 +36,36 @@ async function readAccessToken(response: Response): Promise<string | undefined> 
   }
 }
 
+async function tokenFromAuthResponse(response: Response | null): Promise<string | undefined> {
+  if (!response) return undefined;
+  return usableAdminToken(await readAccessToken(response));
+}
+
 async function tokenFromUi(page: Page): Promise<string> {
-  const pending = page.waitForResponse(isAuthTokenResponse);
+  const fromSession = page.waitForResponse(isAuthTokenResponse, { timeout: 30_000 });
+  await page.goto('/programs');
+  await page
+    .getByRole('heading', { name: 'Programs', level: 2 })
+    .waitFor({ timeout: 30_000 })
+    .catch(() => undefined);
+  let token = await tokenFromAuthResponse(await fromSession.catch(() => null));
+  if (token) return token;
+
   await page.goto('/login');
   const formVisible = await page
     .getByLabel('Email')
     .isVisible()
     .catch(() => false);
   if (formVisible) {
+    const pending = page.waitForResponse(isAuthTokenResponse);
     await page.getByLabel('Email').fill(process.env.DIDAXIS_EMAIL ?? '');
     await page.getByLabel('Password').fill(process.env.DIDAXIS_PASSWORD ?? '');
     await page.getByRole('button', { name: 'Sign In' }).click();
+    token = await tokenFromAuthResponse(await pending);
+    if (token) return token;
   }
-  const token = usableAdminToken(await readAccessToken(await pending));
-  if (!token) throw new Error('UI login did not return a usable access token');
-  return token;
+
+  throw new Error('UI login did not return a usable access token');
 }
 
 async function bearerToken(page: Page, captured: string | undefined): Promise<string> {

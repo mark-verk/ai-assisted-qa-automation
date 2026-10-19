@@ -42,10 +42,21 @@ export default defineConfig({
   /* Use installed Chrome/Edge instead of Playwright-bundled Chromium (set PLAYWRIGHT_BROWSER_CHANNEL=msedge for Edge). */
   projects: [
     {
-      name: process.env.PLAYWRIGHT_BROWSER_CHANNEL === 'msedge' ? 'msedge' : 'chrome',
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
       use: {
         ...devices['Desktop Chrome'],
         channel: process.env.PLAYWRIGHT_BROWSER_CHANNEL === 'msedge' ? 'msedge' : 'chrome',
+      },
+    },
+    {
+      name: process.env.PLAYWRIGHT_BROWSER_CHANNEL === 'msedge' ? 'msedge' : 'chrome',
+      testIgnore: /.*\.setup\.ts/,
+      dependencies: ['setup'],
+      use: {
+        ...devices['Desktop Chrome'],
+        channel: process.env.PLAYWRIGHT_BROWSER_CHANNEL === 'msedge' ? 'msedge' : 'chrome',
+        storageState: path.join(__dirname, 'playwright', '.auth', 'user.json'),
       },
     },
   ],

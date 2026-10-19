@@ -36,7 +36,7 @@ Create stays disabled after a valid name and description are entered. Playwright
 Form state does not enable Create when both fields are filled. The failure is the assertion in the spec before submit.
 
 ## Source code
-- Test: `tests/ds1-create-program.spec.ts` (line 145)
+- Test: `tests/ds1-create-new-academic-program.spec.ts` (line 145)
 - Feature: `features/DS-1.feature` (Successfully create a program)
 ```
 
@@ -52,7 +52,7 @@ Form state does not enable Create when both fields are filled. The failure is th
   "name": "uploadAttachmentToJiraIssue",
   "inputs": {
     "issueIdOrKey": "DS-42",
-    "filePath": "test-results/ds1-create-program-TC-002/test-failed-1.png"
+    "filePath": "test-results/ds1-create-new-academic-program-TC-002/test-failed-1.png"
   }
 }
 ```

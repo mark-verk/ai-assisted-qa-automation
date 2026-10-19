@@ -16,7 +16,7 @@ a screenshot attached to the issue.
 
 ## Resolve the failure
 
-1. Source ticket: `test.describe('DS-N — …')` in `tests/dsN-create-program.spec.ts`. Match the scenario in `features/DS-N.feature`.
+1. Source ticket: `test.describe('DS-N — …')` in `tests/dsN-<jira-summary-kebab>.spec.ts` (for example `tests/ds1-create-new-academic-program.spec.ts`). Match the scenario in `features/DS-N.feature`.
 2. Read the failure: assertion message, timeout, locator, URL, and stack line in the spec.
 3. Classify: **app bug**, **test defect**, **environment/data**, or **flake**. Cite the failing `expect` and the observable state.
 4. If it is clearly a **test defect**, ask once whether to file a Bug or comment on the story instead. Do not create a Bug until the user answers.
@@ -52,7 +52,7 @@ Before create, `searchJiraIssuesUsingJql` in project **DS**, type Bug, using the
 …
 
 ## Source code
-- Test: `tests/dsN-create-program.spec.ts` (line …)
+- Test: `tests/dsN-<jira-summary-kebab>.spec.ts` (line …)
 - Feature: `features/DS-N.feature` (scenario …)
 ```
 
@@ -73,7 +73,7 @@ This is a link, not a sub-task. Do not set `parent` on `createJiraIssue`.
 `playwright.config.ts` does not save screenshots (`trace` is `on-first-retry`; local `retries` is 0). Look under `test-results/` for `test-failed-*.png`. If it is missing, re-run only the failing test:
 
 ```bash
-npx playwright test tests/dsN-create-program.spec.ts -g "<test title>" --workers=1 --screenshot=only-on-failure
+npx playwright test tests/dsN-<jira-summary-kebab>.spec.ts -g "<test title>" --workers=1 --screenshot=only-on-failure
 ```
 
 Upload that png. Do not attach `.env` or anything with credentials.
