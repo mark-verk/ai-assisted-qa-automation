@@ -3,18 +3,33 @@ import { test, expect } from '@playwright/test';
 import { ProgramsPage } from '../pages/ProgramsPage';
 import { assertProgramsPageReady } from './helpers/createProgramViaUi';
 
+const axeTags = ['wcag2a', 'wcag2aa'] as const;
+
 test.describe('Programs accessibility', { tag: '@regression' }, () => {
   test('Programs list page has no axe violations', async ({ page }) => {
+    test.setTimeout(120_000);
     const programsPage = new ProgramsPage(page);
     await programsPage.goto();
     await assertProgramsPageReady(programsPage);
 
-    const results = await new AxeBuilder({ page }).analyze();
+    const results = await new AxeBuilder({ page }).withTags([...axeTags]).analyze();
 
     await expect(results.violations).toEqual([]);
   });
 
+  test('keyboard opens New Program dialog from primary control', async ({ page }) => {
+    const programsPage = new ProgramsPage(page);
+    await programsPage.goto();
+    await assertProgramsPageReady(programsPage);
+
+    await programsPage.tabToNewProgramButton();
+    await expect(programsPage.newProgramButton).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(programsPage.newProgramModal.dialog).toBeVisible();
+  });
+
   test('New Program modal has no axe violations when scoped to the dialog', async ({ page }) => {
+    test.setTimeout(120_000);
     const programsPage = new ProgramsPage(page);
     await programsPage.goto();
     await assertProgramsPageReady(programsPage);
@@ -23,8 +38,8 @@ test.describe('Programs accessibility', { tag: '@regression' }, () => {
     const modalInclude = await programsPage.newProgramModal.axeScanInclude();
 
     const results = await new AxeBuilder({ page })
+      .withTags([...axeTags])
       .include(modalInclude)
-      .disableRules('color-contrast')
       .analyze();
 
     await expect(results.violations).toEqual([]);

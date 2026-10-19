@@ -43,6 +43,20 @@ export class ProgramsPage {
     }
   }
 
+  /** Tab from current focus until the primary New Program control is focused. */
+  async tabToNewProgramButton(maxTabs = 50): Promise<void> {
+    for (let i = 0; i < maxTabs; i += 1) {
+      const isFocused = await this.newProgramButton.evaluate((el) => {
+        const active = document.activeElement;
+        return active === el || (active instanceof Node && el.contains(active));
+      });
+      if (isFocused) {
+        return;
+      }
+      await this.page.keyboard.press('Tab');
+    }
+  }
+
   async openNewProgramForm(): Promise<void> {
     await this.newProgramButton.scrollIntoViewIfNeeded();
 
