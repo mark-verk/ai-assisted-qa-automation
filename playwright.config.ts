@@ -21,8 +21,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: process.env.CI ? [['html'], ['github']] : 'list',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL: process.env.DIDAXIS_URL,
@@ -39,25 +38,19 @@ export default defineConfig({
     },
   },
 
-  /* Use installed Chrome/Edge instead of Playwright-bundled Chromium (set PLAYWRIGHT_BROWSER_CHANNEL=msedge for Edge). */
+  /* Configure projects for major browsers */
   projects: [
     {
       name: 'setup',
       testMatch: /.*\.setup\.ts/,
-      use: {
-        ...devices['Desktop Chrome'],
-        channel: process.env.PLAYWRIGHT_BROWSER_CHANNEL === 'msedge' ? 'msedge' : 'chrome',
-      },
     },
     {
-      name: process.env.PLAYWRIGHT_BROWSER_CHANNEL === 'msedge' ? 'msedge' : 'chrome',
-      testIgnore: /.*\.setup\.ts/,
-      dependencies: ['setup'],
+      name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        channel: process.env.PLAYWRIGHT_BROWSER_CHANNEL === 'msedge' ? 'msedge' : 'chrome',
-        storageState: path.join(__dirname, 'playwright', '.auth', 'user.json'),
+        storageState: path.join(__dirname, 'playwright/.auth/user.json'),
       },
+      dependencies: ['setup'],
     },
   ],
 
