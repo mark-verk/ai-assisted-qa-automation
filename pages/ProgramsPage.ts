@@ -103,6 +103,16 @@ export class ProgramsPage {
     return this.table.getByRole('row').filter({ hasText: name });
   }
 
+  programRowByExactName(name: string): Locator {
+    return this.table.getByRole('row').filter({
+      has: this.programDeleteButton(name),
+    });
+  }
+
+  programTitle(token: string): Locator {
+    return this.programRow(token).getByRole('paragraph').filter({ hasText: token });
+  }
+
   rowContaining(text: string): Locator {
     return this.page.getByRole('row').filter({ hasText: text });
   }

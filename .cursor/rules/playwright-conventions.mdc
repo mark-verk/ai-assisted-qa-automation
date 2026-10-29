@@ -1,0 +1,40 @@
+---
+description: How this project writes Playwright tests — auth, POM, locators, cleanup, and data.
+globs: tests/**/*.ts
+alwaysApply: false
+---
+
+# Playwright Conventions
+
+## Auth
+
+Reuse the stored admin session. `tests/auth.setup.ts` writes `playwright/.auth/user.json`, and the `chromium` project loads it via `storageState`. Do not sign in through the UI in ordinary specs.
+
+UI login is only for tests of the login page. Clear the session with `test.use({ storageState: unauthenticatedStorageState })` from `fixtures/auth.helpers.ts`, then call `signInWithCredentials`.
+
+## Page objects
+
+One class per page or component in `pages/` (`ProgramsPage`, `NewProgramModal`). Locators are `readonly` fields set in the constructor. Methods perform actions (`goto`, `fill`, `clickCreate`); they do not assert. Specs import the POM and instantiate with `new XxxPage(page)`. Every `expect(...)` stays in the spec.
+
+```typescript
+// bad — locator in the spec, assertion in the POM
+await page.locator('button.create').click();
+await expect(this.dialog).toBeVisible();
+
+// good — intent in the test, mechanics in the POM
+const programs = new ProgramsPage(page);
+await programs.openNewProgramForm();
+await expect(programs.newProgram.dialog).toBeVisible();
+```
+
+## Locators
+
+Priority: `getByRole` → `getByLabel` / `getByPlaceholder` → `getByText` → `getByTestId` (comment why nothing higher worked). Scope to the owning dialog or region. Disambiguate with `.filter({ hasText })`.
+
+Never CSS, XPath, `.first()`, brittle copy, or `waitForTimeout`. Wait with `expect(locator).toBeVisible()` / `.toBeEnabled()` / `.toHaveText()`.
+
+## Data and cleanup
+
+Name created records with `Date.now()` (add `test.info().workerIndex` when tests run in parallel). Import `{ test, expect }` from `fixtures/cleanup.fixture`, not from `@playwright/test`. On a successful `POST /api/programs`, call `trackProgram(data.id)` immediately. Do not write `afterAll` cleanup, hardcode tokens, or delete records the test did not create.
+
+Detail: `.cursor/skills/pom-conventions/SKILL.md` and `.cursor/skills/api-cleanup/SKILL.md`.

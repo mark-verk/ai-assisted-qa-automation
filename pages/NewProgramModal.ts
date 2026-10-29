@@ -9,6 +9,8 @@ export class NewProgramModal {
   readonly headerCloseButton: Locator;
   readonly totalProgramHoursLabel: Locator;
   readonly aiGenerationConfigToggle: Locator;
+  readonly alert: Locator;
+  readonly duplicateNameError: Locator;
 
   constructor(private readonly page: Page) {
     this.dialog = page.getByRole('dialog', { name: 'New Program' });
@@ -21,6 +23,10 @@ export class NewProgramModal {
     this.aiGenerationConfigToggle = this.dialog.getByRole('button', {
       name: /Show AI Generation Config|Hide AI Generation Config/i,
     });
+    this.alert = this.dialog.getByRole('alert');
+    this.duplicateNameError = this.dialog.getByText(
+      /already exists|name already|duplicate|program with this name|must be unique|already been taken/i,
+    );
   }
 
   async fill(options: { name: string; description?: string }): Promise<void> {
