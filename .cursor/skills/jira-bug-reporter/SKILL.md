@@ -18,7 +18,7 @@ a screenshot attached to the issue.
 
 1. Source ticket: `test.describe('DS-N — …')` in `tests/dsN-<jira-summary-kebab>.spec.ts` (for example `tests/ds1-create-new-academic-program.spec.ts`). Match the scenario in `features/DS-N.feature`.
 2. Read the failure: assertion message, timeout, locator, URL, and stack line in the spec.
-3. Classify: **app bug**, **test defect**, **environment/data**, or **flake**. Cite the failing `expect` and the observable state.
+3. Classify: **app bug**, **test defect**, **environment/data**, or **flake**. Cite the failing `expect` and the observable state. A programs-page axe scan (`new AxeBuilder({ page }).withTags(['wcag2a','wcag2aa']).analyze()`) whose `violations` are not `[]` is an **app bug**. List each rule id. Do not recommend `.disableRules()`, `.include()`/`.exclude()` unless a third-party widget is noisy (say why), or any change that hides the failure to go green. A keyboard failure axe cannot cover — primary control not focused, or Enter does not open the dialog — is an app bug when the POM role locator matches the control.
 4. If it is clearly a **test defect**, ask once whether to file a Bug or comment on the story instead. Do not create a Bug until the user answers.
 
 ## Duplicate check

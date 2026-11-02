@@ -35,9 +35,7 @@ await expect(results.violations).toEqual([]);
 - Assert with `expect(results.violations).toEqual([])` — never bare `assert`
   or manual length checks.
 - Scope with `.include()` / `.exclude()` **only** if a third-party widget is
-  noisy, and comment why. Prefer full-page scans for page-level coverage;
-  for a modal/component under test, `.include()` from a role-based POM helper
-  (e.g. `NewProgramModal.axeIncludeSelector()`) is fine.
+  noisy, and comment why. Prefer a full-page scan for the programs page.
 
 ## Keyboard test (axe cannot do this)
 
@@ -69,8 +67,11 @@ If the scan finds **real** violations: **report them and stop**.
 - Dedicated: `tests/<feature>.a11y.spec.ts`
 - Or an axe assertion at the end of a functional test that already reaches the UI
 
-Keep axe scans and keyboard asserts in specs, not POMs. POMs may expose
-`axeIncludeSelector()` helpers only.
+Keep axe scans and keyboard asserts in specs, not POMs. A POM may expose an
+include/exclude selector only for a noisy third-party widget, with the reason
+commented at the call site. Assert `expect(results.violations).toEqual([])`
+in the spec. Do not wrap that assert in a helper that records violations and
+lets CI stay green.
 
 ## Checklists
 

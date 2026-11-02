@@ -17,14 +17,14 @@ export default defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
+  /* Local runs fail on the first attempt. CI retries twice, never more. */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? [['html'], ['github']] : 'list',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL: process.env.DIDAXIS_URL,
+    locale: 'en-US',
+    timezoneId: 'America/New_York',
     navigationTimeout: 30_000,
     actionTimeout: 15_000,
 

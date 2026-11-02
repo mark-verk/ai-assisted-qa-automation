@@ -33,11 +33,22 @@ intent; POMs handle mechanics.
 5. **No assertions inside Page Objects.** All `expect(...)` calls
    live in the test files, never in `pages/`. Prefer auto-retrying
    web-first expects; never `expect(await locator.isVisible()).toBe(true)`.
+   When hardening an existing spec, change locators and waits only —
+   do not change what an assertion checks. A relative timestamp is
+   frozen in the spec with `page.clock.install({ time })` before
+   navigation (see **Frozen time** in `.cursor/rules/playwright-conventions.mdc`).
+   Do not put that call in a page object, and do not change
+   `playwright.config.ts` (`fullyParallel: true`, CI retries `2` and
+   local retries `0`, no `workers: 1`).
 
 6. Compose POMs when a page contains distinct components — e.g.
    `ProgramsPage` holds a `NewProgramModal` instance.
 
 7. Import POMs at the top of each spec; instantiate with `new XxxPage(page)`.
+
+8. Programs API edge cases (`page.route` on `/api/programs`) follow `.cursor/rules/playwright-conventions.mdc`. The route stays in the spec. Clicks, fills, and navigation stay on the existing POMs. Before writing an error or empty-state assertion, open the real page (Playwright MCP `user-Playwright` or agent-browser) and read the copy the app renders. Do not invent strings. If the app renders nothing for a case, say so. Never mock the endpoint the test is actually verifying. One tag per test.
+
+9. Programs page accessibility stays in the spec, driven by the existing POMs. Role-based locators only; no inline locators in the spec. The axe scan is `new AxeBuilder({ page }).withTags(['wcag2a','wcag2aa']).analyze()` with `expect(results.violations).toEqual([])`. Scope with `.include()`/`.exclude()` only if a third-party widget is noisy, and comment why. The keyboard test axe cannot do — tab to the primary control, `toBeFocused()`, Enter, dialog open — uses those same POM locators. One tag per test. If the scan finds real violations, report them and stop. Never add `.disableRules()` to go green.
 
 ## Output
 Page Object files in `pages/`. Tests in `tests/` that import them.

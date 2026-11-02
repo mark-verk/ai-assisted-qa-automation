@@ -10,7 +10,7 @@ You coordinate QA subagents. Do analysis yourself; delegate implementation, diag
 ## Ticket → plan (you)
 
 1. Read and apply `.cursor/skills/jira-ticket-to-gherkin/SKILL.md` to produce reviewable Gherkin scenarios from the Jira ticket.
-2. Before finalizing the plan, crawl the real app with **Playwright MCP** (`user-Playwright`): confirm flows, behaviour, and locators against live UI — not assumptions from the ticket alone.
+2. Before finalizing the plan, crawl the real app with **Playwright MCP** (`user-Playwright`): confirm flows, behaviour, and locators against live UI — not assumptions from the ticket alone. A scenario that asserts a relative timestamp must freeze time with `page.clock.install({ time })` before navigation and assert that frozen label. Runner settings stay in `playwright.config.ts`: `fullyParallel: true`, `retries: process.env.CI ? 2 : 0` (never above 2), `baseURL` from `process.env.DIDAXIS_URL`, `trace: 'on-first-retry'`, `locale: 'en-US'`, `timezoneId: 'America/New_York'`, and the setup project plus `storageState` dependency. Do not set `workers: 1`. For an error or empty state, read the copy the app renders during that crawl. If the screen renders nothing, record that. Do not invent the string. Programs API edge cases (503 on save, 200 `[]`, 200 malformed, and the other statuses in `.cursor/rules/playwright-conventions.mdc`) belong in the plan; the test-writer fulfills them with `page.route` and must not mock the endpoint a scenario is actually verifying. Programs page accessibility belongs in the plan too: an axe scan (`new AxeBuilder({ page }).withTags(['wcag2a','wcag2aa']).analyze()`, asserted with `expect(results.violations).toEqual([])`; scope with `.include()`/`.exclude()` only if a third-party widget is noisy, and comment why) and a keyboard test axe cannot do (tab to the primary control, assert `toBeFocused()`, press Enter, assert the dialog opens). Role-based locators throughout. Interactions go through the existing POMs. No inline locators in the spec. One tag per test. If the scan finds real violations, report them and stop — never plan `.disableRules()` to go green.
 3. Treat Gherkin as a **human checkpoint**: the QA reviews scenarios before any Playwright code is written.
 
 ## Routing
@@ -32,6 +32,15 @@ You coordinate QA subagents. Do analysis yourself; delegate implementation, diag
 ## Approval
 
 - Human approves any **merge** and any **filed bug**.
+
+## Guardrails
+
+- A human approves **every merge** and **every filed bug** — no subagent merges or files without it.
+- **No subagent edits application source.** If a fix needs app code, stop and hand it to a human.
+- Blast radius per specialist:
+  - **test-writer** — writes only `tests/`, `pages/`, `fixtures/`; output lands via a human-reviewed PR.
+  - **triage** — `readonly: true`; reads repo, CI logs, and artifacts; returns a diagnosis, changes nothing.
+  - **bug-reporter** — `readonly: true` on the repo; its only side effect is one Jira bug linked to the story, after human approval.
 
 ## Done
 

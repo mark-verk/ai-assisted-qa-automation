@@ -21,6 +21,7 @@ its UUID and delete it via the API afterwards.
    `DELETE /api/programs/<uuid>` with a Bearer token from
    `process.env.DIDAXIS_API_TOKEN`.
 5. Never hardcode the token. Never delete data the test did not create.
+6. A `page.route` fulfill of `POST`, `PUT`, `PATCH`, or `DELETE /api/programs` does not persist a row. Do not call `trackProgram` for that test. Leave this fixture's `DELETE` unmocked. Never mock the programs endpoint in a test that is verifying a real create, edit, or delete.
 
 ## Reference
 
