@@ -187,6 +187,12 @@ export class ProgramsPage {
     return this.page.getByRole('button', { name: `Delete ${name}`, exact: true });
   }
 
+  async clickProgramDelete(programName: string): Promise<void> {
+    const button = this.programDeleteButton(programName);
+    await button.scrollIntoViewIfNeeded();
+    await button.click();
+  }
+
   anyEditButton(): Locator {
     return this.page.getByRole('button', { name: /^Edit / });
   }
