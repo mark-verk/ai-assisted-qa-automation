@@ -7,6 +7,7 @@ const PROGRAMS_PATH = '/programs';
 export class ProgramsPage {
   readonly heading: Locator;
   readonly newProgramButton: Locator;
+  readonly pageAlert: Locator;
   readonly table: Locator;
   readonly newProgramModal: NewProgramModal;
   readonly editProgramModal: EditProgramModal;
@@ -14,6 +15,7 @@ export class ProgramsPage {
   constructor(private readonly page: Page) {
     this.heading = page.getByRole('heading', { name: 'Programs', level: 2 });
     this.newProgramButton = page.getByRole('button', { name: '+ New Program' });
+    this.pageAlert = page.getByRole('alert');
     this.table = page.getByRole('table');
     this.newProgramModal = new NewProgramModal(page);
     this.editProgramModal = new EditProgramModal(page);
