@@ -7,6 +7,14 @@ export async function assertProgramsPageReady(programsPage: ProgramsPage): Promi
   await expect(programsPage.newProgramButton).toBeVisible();
 }
 
+export async function openCreateForm(page: Page): Promise<ProgramsPage> {
+  const programsPage = new ProgramsPage(page);
+  await programsPage.goto();
+  await assertProgramsPageReady(programsPage);
+  await programsPage.openNewProgramForm();
+  return programsPage;
+}
+
 export async function createProgramViaUi(
   page: Page,
   options: { name: string; description?: string },
