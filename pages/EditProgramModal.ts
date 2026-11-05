@@ -6,6 +6,7 @@ export class EditProgramModal {
   readonly descriptionField: Locator;
   readonly saveButton: Locator;
   readonly cancelButton: Locator;
+  readonly alert: Locator;
 
   constructor(private readonly page: Page) {
     this.dialog = page.getByRole('dialog', { name: 'Edit Program' });
@@ -13,6 +14,11 @@ export class EditProgramModal {
     this.descriptionField = this.dialog.getByLabel('Description');
     this.saveButton = this.dialog.getByRole('button', { name: 'Save' });
     this.cancelButton = this.dialog.getByRole('button', { name: 'Cancel' });
+    this.alert = this.dialog.getByRole('alert');
+  }
+
+  async clearProgramName(): Promise<void> {
+    await this.programNameField.fill('');
   }
 
   async fillProgramName(name: string): Promise<void> {
@@ -25,6 +31,13 @@ export class EditProgramModal {
 
   async clickSave(): Promise<void> {
     await this.saveButton.click();
+  }
+
+  /** Clicks Save when enabled; otherwise leaves the form unchanged. */
+  async attemptSave(): Promise<void> {
+    if (await this.saveButton.isEnabled()) {
+      await this.clickSave();
+    }
   }
 
   async clickCancel(): Promise<void> {
