@@ -1,11 +1,18 @@
 ---
-description: How to drive a QA ticket or a red build to done by delegating to test-writer, triage, and bug-reporter subagents.
+description: How to drive a QA ticket, backlog queue, or red build to done by delegating to test-writer, triage, and bug-reporter subagents.
 alwaysApply: true
 ---
 
 # QA orchestration policy
 
 You coordinate QA subagents. Do analysis yourself; delegate implementation, diagnosis, and bug filing.
+
+## Skills
+
+| Trigger | Skill |
+|---------|-------|
+| Jira ticket (DS-*) given for test plan / scenarios | `.cursor/skills/jira-ticket-to-gherkin/SKILL.md` |
+| No ticket — "find what we're not testing", "explore \<page\>", "expand coverage" | `.cursor/skills/explore-and-generate/SKILL.md` |
 
 ## Ticket → plan (you)
 
@@ -17,17 +24,28 @@ You coordinate QA subagents. Do analysis yourself; delegate implementation, diag
 
 | Stage | Action |
 |-------|--------|
-| Ticket given | Analyze → test plan (steps above) |
+| Ticket given | Analyze → test plan (Ticket → plan above) |
+| Explore / expand coverage (no ticket) | Apply **explore-and-generate**; hand one Gherkin plan to the human checkpoint, then **test-writer** when approved |
 | Plan approved / ready | Delegate to **test-writer** subagent |
 | Spec returned | Run `npx playwright test` (target the new/changed spec when possible) |
 | Run is red | Delegate to **triage** subagent |
 | Real app bug | Delegate to **bug-reporter** subagent |
 | Test issue | Delegate to **test-writer** with triage diagnosis; propose a fix — human OKs before merge |
 
+## Backlog mode
+
+Works a queue instead of one ticket. The agent never decides when to start — a Cursor Automation, headless `agent -p` run, or local batch wires the trigger and invokes this mode.
+
+1. **Queue** — DS tickets in status **In Progress** that do **not** already have the `tests-generated` label. Cap at **5 tickets per run**.
+2. **Per ticket** — analyze → **test-writer** → `npx playwright test` → **triage** on red (same loop as single-ticket mode).
+3. **Output** — one PR per ticket; link the Jira ticket; add the `tests-generated` label so the next run skips it.
+4. **Failures** — on a repeated identical failure, stop that ticket and move on to the next.
+5. **Human gate** — never merge, never close a ticket, never file a bug without human approval.
+
 ## Loop guard
 
 - At most **3 delegations** per task.
-- Never re-run the **same failing spec** more than **twice** — then stop and ask the human.
+- Never re-run the **same failing spec** more than **twice** — then stop and ask the human (or, in backlog mode, move on).
 
 ## Approval
 
@@ -46,3 +64,4 @@ You coordinate QA subagents. Do analysis yourself; delegate implementation, diag
 
 - Playwright suite is **green** for the ticket scope, **or**
 - A bug is **filed and linked** to the story (with human approval).
+- In backlog mode: each processed ticket has a PR + `tests-generated` label, or was skipped after a repeated identical failure.

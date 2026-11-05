@@ -1,6 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 import { EditProgramModal } from './EditProgramModal';
 import { NewProgramModal } from './NewProgramModal';
+import { NewSemesterModal } from './NewSemesterModal';
 
 const PROGRAMS_PATH = '/programs';
 
@@ -10,6 +11,12 @@ export class ProgramsPage {
   readonly table: Locator;
   readonly newProgramModal: NewProgramModal;
   readonly editProgramModal: EditProgramModal;
+  readonly newSemesterModal: NewSemesterModal;
+  readonly selectProgramPrompt: Locator;
+  readonly semestersSchedulingHeading: Locator;
+  readonly newSemesterButton: Locator;
+  readonly manageCoursesButton: Locator;
+  readonly noSemestersYetText: Locator;
 
   constructor(private readonly page: Page) {
     this.heading = page.getByRole('heading', { name: 'Programs', level: 2 });
@@ -17,6 +24,61 @@ export class ProgramsPage {
     this.table = page.getByRole('table');
     this.newProgramModal = new NewProgramModal(page);
     this.editProgramModal = new EditProgramModal(page);
+    this.newSemesterModal = new NewSemesterModal(page);
+    this.selectProgramPrompt = page.getByText('Select a program to manage semesters');
+    this.semestersSchedulingHeading = page.getByText('Semesters & scheduling config');
+    this.newSemesterButton = page.getByRole('button', { name: '+ Semester' });
+    this.manageCoursesButton = page.getByRole('button', { name: 'Manage Courses' });
+    this.noSemestersYetText = page.getByText('No semesters yet');
+  }
+
+  programDetailHeading(programName: string): Locator {
+    return this.page.getByRole('heading', { name: programName, level: 4 });
+  }
+
+  semesterEntry(semesterName: string): Locator {
+    return this.page.getByText(semesterName, { exact: true });
+  }
+
+  async selectProgram(programName: string): Promise<void> {
+    const title = this.programTitle(programName);
+    await title.scrollIntoViewIfNeeded();
+    await title.click();
+    await this.programDetailHeading(programName).waitFor({ state: 'visible' });
+  }
+
+  async openNewSemesterForm(): Promise<void> {
+    await this.newSemesterButton.scrollIntoViewIfNeeded();
+    await this.newSemesterButton.click();
+    await this.newSemesterModal.dialog.waitFor({ state: 'visible' });
+    await this.newSemesterModal.semesterNameField.waitFor({ state: 'visible' });
+  }
+
+  async createSemester(options: {
+    name: string;
+    startDate: string;
+    endDate: string;
+  }): Promise<void> {
+    await this.newSemesterModal.fill(options);
+    await this.newSemesterModal.clickCreate();
+  }
+
+  /**
+   * Tab to + Semester within the open detail panel.
+   * Focus starts on Manage Courses so Tab does not walk the entire programs table.
+   */
+  async tabToNewSemesterButton(maxTabs = 10): Promise<void> {
+    await this.manageCoursesButton.focus();
+    for (let i = 0; i < maxTabs; i += 1) {
+      const isFocused = await this.newSemesterButton.evaluate((el) => {
+        const active = document.activeElement;
+        return active === el || (active instanceof Node && el.contains(active));
+      });
+      if (isFocused) {
+        return;
+      }
+      await this.page.keyboard.press('Tab');
+    }
   }
 
   async goto(): Promise<void> {
