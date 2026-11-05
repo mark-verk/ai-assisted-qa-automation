@@ -209,6 +209,27 @@ export class ProgramsPage {
     return this.page.getByText(/No programs yet/i);
   }
 
+  programsEmptyStateExact(): Locator {
+    return this.page.getByText('No programs yet. Create your first program to get started.', {
+      exact: true,
+    });
+  }
+
+  /** Tab from current focus until the row Edit control for the given program is focused. */
+  async tabToEditProgramButton(programName: string, maxTabs = 80): Promise<void> {
+    const editButton = this.programEditButton(programName);
+    for (let i = 0; i < maxTabs; i += 1) {
+      const isFocused = await editButton.evaluate((el) => {
+        const active = document.activeElement;
+        return active === el || (active instanceof Node && el.contains(active));
+      });
+      if (isFocused) {
+        return;
+      }
+      await this.page.keyboard.press('Tab');
+    }
+  }
+
   paginationOrPageControls(): Locator {
     return this.page
       .getByRole('navigation')
