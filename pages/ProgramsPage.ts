@@ -17,9 +17,11 @@ export class ProgramsPage {
   readonly newSemesterButton: Locator;
   readonly manageCoursesButton: Locator;
   readonly noSemestersYetText: Locator;
+  readonly pageAlert: Locator;
 
   constructor(private readonly page: Page) {
     this.heading = page.getByRole('heading', { name: 'Programs', level: 2 });
+    this.pageAlert = page.getByRole('alert');
     this.newProgramButton = page.getByRole('button', { name: '+ New Program' });
     this.table = page.getByRole('table');
     this.newProgramModal = new NewProgramModal(page);
@@ -119,6 +121,21 @@ export class ProgramsPage {
     }
   }
 
+  /** Tab from current focus until the Edit control for the given program is focused. */
+  async tabToProgramEditButton(programName: string, maxTabs = 80): Promise<void> {
+    const editButton = this.programEditButton(programName);
+    for (let i = 0; i < maxTabs; i += 1) {
+      const isFocused = await editButton.evaluate((el) => {
+        const active = document.activeElement;
+        return active === el || (active instanceof Node && el.contains(active));
+      });
+      if (isFocused) {
+        return;
+      }
+      await this.page.keyboard.press('Tab');
+    }
+  }
+
   async openNewProgramForm(): Promise<void> {
     await this.newProgramButton.scrollIntoViewIfNeeded();
 
@@ -201,7 +218,7 @@ export class ProgramsPage {
 
   emptyStateText(): Locator {
     return this.page.getByText(
-      /no programs yet|haven't created any programs|no programs have been created|no programs found/i,
+      /No programs yet(?:\. Create your first program to get started)?|haven't created any programs|no programs have been created|no programs found/i,
     );
   }
 
