@@ -119,6 +119,101 @@ Feature: DS-1 — Create new academic program
     Then I see fields Program Name and Description
     And I see Total Program Hours and AI Generation Config controls
 
+  # Programs API edge cases (observed via live crawl — app shows no error alert copy)
+
+  Scenario: Create save returns 503
+    Given I am on the program creation form
+    And POST /api/programs will respond 503
+    When I fill in Program Name with a unique name and click Create
+    Then the New Program dialog stays open
+    And the Programs heading stays visible
+    And no pageerror is raised
+    # Crawl: no role=alert / toast copy rendered for 503
+
+  Scenario: Create save returns 400
+    Given I am on the program creation form
+    And POST /api/programs will respond 400
+    When I submit a filled create form
+    Then the New Program dialog stays open
+    And the Programs heading stays visible
+    And no pageerror is raised
+
+  Scenario: Create save returns 401
+    Given I am on the program creation form
+    And POST /api/programs will respond 401
+    When I submit a filled create form
+    Then the New Program dialog stays open or the app redirects to login
+    And no pageerror is raised
+
+  Scenario: Create save returns 403
+    Given I am on the program creation form
+    And POST /api/programs will respond 403
+    When I submit a filled create form
+    Then the New Program dialog stays open
+    And the Programs heading stays visible
+    And no pageerror is raised
+
+  Scenario: Create save returns 422
+    Given I am on the program creation form
+    And POST /api/programs will respond 422
+    When I submit a filled create form
+    Then the New Program dialog stays open
+    And the Programs heading stays visible
+    And no pageerror is raised
+
+  Scenario: Create save returns 500
+    Given I am on the program creation form
+    And POST /api/programs will respond 500
+    When I submit a filled create form
+    Then the New Program dialog stays open
+    And the Programs heading stays visible
+    And no pageerror is raised
+
+  Scenario: Create save returns 501
+    Given I am on the program creation form
+    And POST /api/programs will respond 501
+    When I submit a filled create form
+    Then the New Program dialog stays open
+    And the Programs heading stays visible
+    And no pageerror is raised
+
+  Scenario: Create save returns 502
+    Given I am on the program creation form
+    And POST /api/programs will respond 502
+    When I submit a filled create form
+    Then the New Program dialog stays open
+    And the Programs heading stays visible
+    And no pageerror is raised
+
+  Scenario: Create save returns 409 conflict
+    Given I am on the program creation form
+    And POST /api/programs will respond 409
+    When I submit a filled create form
+    Then the New Program dialog stays open
+    And the Programs heading stays visible
+    And no pageerror is raised
+
+  Scenario: Create save returns 200 without a program object
+    Given I am on the program creation form
+    And POST /api/programs will respond 200 with body {"ok":true}
+    When I submit a filled create form
+    Then the app does not crash
+    And the Programs heading stays visible
+    And no pageerror is raised
+    # Crawl: dialog closed; no program row to track — do not call trackProgram
+
+  Scenario: Programs list GET returns 200 with empty data array
+    Given GET /api/programs will respond 200 with {"data":[]}
+    When I navigate to the Programs page
+    Then I see "No programs yet. Create your first program to get started."
+    And I see a "Create Program" control
+
+  Scenario: Programs list GET returns 200 with malformed body
+    Given GET /api/programs will respond 200 with {"data":null}
+    When I navigate to the Programs page
+    Then the Programs heading stays visible
+    And no pageerror is raised
+
 # Ambiguities and gaps in acceptance criteria (for QA review):
 # 1. Description required? ACs require Program Name but do not state whether Description is optional.
 # 2. Maximum field lengths are not specified in the ticket; 255/2000/256+ scenarios probe observed UI behavior.
