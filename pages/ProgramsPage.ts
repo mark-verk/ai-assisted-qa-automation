@@ -17,6 +17,8 @@ export class ProgramsPage {
   readonly newSemesterButton: Locator;
   readonly manageCoursesButton: Locator;
   readonly noSemestersYetText: Locator;
+  readonly programsEmptyStateMessage: Locator;
+  readonly createProgramButton: Locator;
 
   constructor(private readonly page: Page) {
     this.heading = page.getByRole('heading', { name: 'Programs', level: 2 });
@@ -30,6 +32,10 @@ export class ProgramsPage {
     this.newSemesterButton = page.getByRole('button', { name: '+ Semester' });
     this.manageCoursesButton = page.getByRole('button', { name: 'Manage Courses' });
     this.noSemestersYetText = page.getByText('No semesters yet');
+    this.programsEmptyStateMessage = page.getByText(
+      'No programs yet. Create your first program to get started.',
+    );
+    this.createProgramButton = page.getByRole('button', { name: 'Create Program' });
   }
 
   programDetailHeading(programName: string): Locator {
