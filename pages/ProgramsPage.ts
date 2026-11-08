@@ -19,13 +19,13 @@ export class ProgramsPage {
   readonly noSemestersYetText: Locator;
 
   constructor(private readonly page: Page) {
-    this.heading = page.getByRole('heading', { name: 'Programme', level: 2 });
-    this.newProgramButton = page.getByRole('button', { name: '+ New Programme' });
+    this.heading = page.getByRole('heading', { name: 'Programs', level: 2 });
+    this.newProgramButton = page.getByRole('button', { name: '+ New Program' });
     this.table = page.getByRole('table');
     this.newProgramModal = new NewProgramModal(page);
     this.editProgramModal = new EditProgramModal(page);
     this.newSemesterModal = new NewSemesterModal(page);
-    this.selectProgramPrompt = page.getByText('Select a programme to manage semesters');
+    this.selectProgramPrompt = page.getByText('Select a program to manage semesters');
     this.semestersSchedulingHeading = page.getByText('Semesters & scheduling config');
     this.newSemesterButton = page.getByRole('button', { name: '+ Semester' });
     this.manageCoursesButton = page.getByRole('button', { name: 'Manage Courses' });

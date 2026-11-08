@@ -49,9 +49,45 @@ jobs:
 
           Queue: DS tickets in status "In Progress" that do not already have the tests-generated label. Cap at 5 tickets per run.
 
-          Per ticket: analyze → write a conforming Playwright spec under tests/ (and pages/fixtures as needed) → run npx playwright test → triage on red. Open one PR per ticket linked to the Jira ticket, then add the tests-generated label so the next run skips it.
+          Per ticket: analyze → write a conforming Playwright spec under tests/ (and pages/fixtures as needed) → run npx playwright test → on red, triage first (see Heal on red below). Open one PR per ticket linked to the Jira ticket, then add the tests-generated label so the next run skips it.
+
+          Heal on red (per ticket and suite-wide):
+          1. Triage first — apply .cursor/skills/ci-failure-triage/SKILL.md. Do not heal, rewrite assertions, or file a bug until triage classifies the failure.
+          2. Drift (test issue) — apply .cursor/skills/self-heal/SKILL.md: re-discover via Playwright MCP (role + accessible name), patch pages/ POM locators only, re-run the failing spec with assertions unchanged, then open a repair PR linked to the failing run. At most one locator repair per heal pass; at most 5 heals per workflow run.
+          3. Real app bug — route to bug-reporter; never heal. Do not file a bug without human approval.
+          4. Never merge any PR without human approval.
 
           On a repeated identical failure, stop that ticket and move on. Never merge, never close a ticket, never file a bug without human approval.
+          EOF
+          )"
+
+      - name: Run Playwright suite
+        id: playwright
+        continue-on-error: true
+        run: npx playwright test
+
+      - name: Self-heal on red and open repair PR
+        if: steps.playwright.outcome == 'failure'
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          agent -p --force --trust --output-format text "$(cat <<EOF
+          The Playwright suite is red after test-generation backlog processing.
+
+          Failing workflow run: $GITHUB_RUN_URL
+          Use playwright-report/ and test-results/ in the repo (from the step above) plus gh run view when you need CI context.
+
+          Follow Heal on red in .cursor/rules/qa-orchestration.mdc:
+
+          1. Triage — apply .cursor/skills/ci-failure-triage/SKILL.md and classify each failure (real app bug vs test issue / drift).
+          2. For each failure classified as drift (cap at 5 heals this run): apply .cursor/skills/self-heal/SKILL.md — patch pages/ POM locators only, never change spec assertions, re-run the failing spec until green with assertions unchanged.
+          3. Open one repair pull request for the heal(s) using gh pr create. Title it like "fix(test): self-heal locator drift" and link $GITHUB_RUN_URL in the body. Summarize old → new locator diffs and green re-run evidence. Do not merge.
+          4. If triage says real app bug, stop healing and summarize for human review — do not open a heal PR and do not file Jira without approval.
+          5. If a heal cannot prove green without changing assertions, stop and escalate in the PR description or job summary — do not weaken tests.
+
+          Push the repair branch and create the PR before finishing.
           EOF
           )"
 
