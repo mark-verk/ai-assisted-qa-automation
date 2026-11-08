@@ -5,6 +5,10 @@
       {
         "command": "node .cursor/hooks/generation-gate.js",
         "failClosed": true
+      },
+      {
+        "command": "node .cursor/hooks/assertion-weaken-gate.js",
+        "failClosed": true
       }
     ]
   }

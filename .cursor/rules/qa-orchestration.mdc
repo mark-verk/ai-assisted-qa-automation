@@ -13,6 +13,7 @@ You coordinate QA subagents. Do analysis yourself; delegate implementation, diag
 |---------|-------|
 | Jira ticket (DS-*) given for test plan / scenarios | `.cursor/skills/jira-ticket-to-gherkin/SKILL.md` |
 | No ticket — "find what we're not testing", "explore \<page\>", "expand coverage" | `.cursor/skills/explore-and-generate/SKILL.md` |
+| Red run classified as drift / test issue (locator broke, heal the suite) | `.cursor/skills/self-heal/SKILL.md` |
 
 ## Ticket → plan (you)
 
@@ -28,9 +29,19 @@ You coordinate QA subagents. Do analysis yourself; delegate implementation, diag
 | Explore / expand coverage (no ticket) | Apply **explore-and-generate**; hand one Gherkin plan to the human checkpoint, then **test-writer** when approved |
 | Plan approved / ready | Delegate to **test-writer** subagent |
 | Spec returned | Run `npx playwright test` (target the new/changed spec when possible) |
-| Run is red | Delegate to **triage** subagent |
-| Real app bug | Delegate to **bug-reporter** subagent |
-| Test issue | Delegate to **test-writer** with triage diagnosis; propose a fix — human OKs before merge |
+| Run is red | Delegate to **triage** subagent to classify (see **Heal on red**) |
+| Real app bug | Delegate to **bug-reporter** — never heal a bug |
+| Test issue (drift) | Apply **self-heal**; open a repair PR linked to the run — human OKs before merge |
+
+## Heal on red
+
+On a red Playwright run, classify before changing anything:
+
+1. **Triage first.** Delegate to **triage**. Do not heal, rewrite assertions, or file a bug until triage returns a classification.
+2. **Drift (test issue).** Apply `.cursor/skills/self-heal/SKILL.md`: re-discover the element via the Agent-Browser (role + accessible name), patch the POM only, re-run the failing spec and prove green with assertions unchanged, then open a repair PR linked to the failing run. Never heal an assertion (do not weaken, delete, or rewrite what the test checks).
+3. **Real app bug.** Delegate to **bug-reporter** to file and link the bug to the story. **Never heal a bug** — do not patch the POM or spec to match broken product behavior.
+4. **Budget.** At most **5 heals per run**. If a heal cannot prove green with assertions unchanged, **stop and escalate** to a human — do not keep mutating locators or weaken the test.
+5. **Human gate.** Never merge a repair PR without a human.
 
 ## Backlog mode
 
@@ -46,19 +57,22 @@ Works a queue instead of one ticket. The agent never decides when to start — a
 
 - At most **3 delegations** per task.
 - Never re-run the **same failing spec** more than **twice** — then stop and ask the human (or, in backlog mode, move on).
+- At most **5 heals per run**; if a heal will not prove green, stop and escalate (see **Heal on red**).
 
 ## Approval
 
-- Human approves any **merge** and any **filed bug**.
+- Human approves any **merge**, any **repair PR merge**, and any **filed bug**.
 
 ## Guardrails
 
 - A human approves **every merge** and **every filed bug** — no subagent merges or files without it.
 - **No subagent edits application source.** If a fix needs app code, stop and hand it to a human.
+- **Never heal a real app bug** and **never heal an assertion** — self-heal patches POM locators only after triage says drift.
 - Blast radius per specialist:
   - **test-writer** — writes only `tests/`, `pages/`, `fixtures/`; output lands via a human-reviewed PR.
   - **triage** — `readonly: true`; reads repo, CI logs, and artifacts; returns a diagnosis, changes nothing.
   - **bug-reporter** — `readonly: true` on the repo; its only side effect is one Jira bug linked to the story, after human approval.
+  - **self-heal** — patches drifted locators in `pages/` only; never touches assertions; opens a repair PR (no merge).
 
 ## Done
 

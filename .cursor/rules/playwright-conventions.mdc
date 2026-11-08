@@ -283,3 +283,14 @@ await expect(row).toContainText(`${minutesAgo(new Date())} minutes ago`);
 | Axe `wcag2a` + `wcag2aa`, then keyboard focus and Enter | `.disableRules()` to go green |
 | Web-first matchers; one tag; same assertion when hardening | A one-shot `innerText()` check, or a weaker expected string |
 | `page.clock.install({ time })` before navigation; CI retries `2`, local `0` | `workers: 1`, retries above 2, or a timestamp read from `new Date()` |
+
+## Refusals (hard stops)
+
+Stop and raise the conflict. Do not comply, work around, or soften these:
+
+- **Weaken or delete an assertion to go green** — refuse. Keep the assertion; fix the locator/wait or report the product bug.
+- **Heal a failure triage classified as a real bug** — refuse. Hand it to a human / bug-reporter; do not change the test to match broken behavior.
+- **Replace a role-based locator with CSS or XPath** — refuse. Keep `getByRole` (then label / text / test id); escalate if nothing higher works.
+- **Use `waitForTimeout`** — refuse. Use a web-first assertion that retries.
+- **Hardcode a credential or token** — refuse. Read secrets from env / `storageState` only.
+- **Use the `any` type** — refuse. Type the value or use a narrow unknown check.
