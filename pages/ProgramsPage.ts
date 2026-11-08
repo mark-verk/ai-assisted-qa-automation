@@ -19,7 +19,7 @@ export class ProgramsPage {
   readonly noSemestersYetText: Locator;
 
   constructor(private readonly page: Page) {
-    this.heading = page.getByRole('heading', { name: 'Programme', level: 2 });
+    this.heading = page.getByRole('heading', { name: 'Programs', level: 2 });
     this.newProgramButton = page.getByRole('button', { name: '+ New Program' });
     this.table = page.getByRole('table');
     this.newProgramModal = new NewProgramModal(page);
