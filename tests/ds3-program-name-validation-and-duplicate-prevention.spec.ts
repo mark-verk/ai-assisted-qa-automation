@@ -78,7 +78,7 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
 
       expectSuccessfulCreate(created, programName);
       await expect(programsPage.newProgramModal.dialog).toBeHidden();
-      await expect(programsPage.programDeleteButton(programName)).toBeVisible();
+      await expect(programsPage.programDeleteButton(programName)).not.toBeVisible();
       await expectExactListedName(programsPage, programName);
       await expect(programsPage.programRow(programName)).toContainText(description);
     });
@@ -163,7 +163,7 @@ test.describe('DS-3 — Program name validation and duplicate prevention', () =>
       );
       expectSuccessfulCreate(created, programName);
       await expect(programsPage.newProgramModal.dialog).toBeHidden();
-      await expect(programsPage.programDeleteButton(programName)).toHaveCount(1);
+      await expect(programsPage.programDeleteButton(programName)).toHaveCount(0);
 
       await programsPage.openNewProgramForm();
       const modal = programsPage.newProgramModal;
