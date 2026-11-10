@@ -92,6 +92,49 @@ Feature: DS-4 — Delete program with confirmation
     And I click Create
     Then the name reuse behavior matches the deletion policy
 
+  # Programs API edge cases — DELETE (observed via live crawl)
+
+  Scenario: Delete returns 404
+    Given a program "Test Program" exists in the list
+    And DELETE /api/programs/:id will respond 404
+    When I confirm deletion of "Test Program"
+    Then "Test Program" remains in the list
+    And the Programs heading stays visible
+    And no pageerror is raised
+    # Crawl: no role=alert / toast copy rendered for delete failures
+
+  Scenario: Delete returns 500
+    Given a program "Test Program" exists in the list
+    And DELETE /api/programs/:id will respond 500
+    When I confirm deletion of "Test Program"
+    Then "Test Program" remains in the list
+    And the Programs heading stays visible
+    And no pageerror is raised
+
+  Scenario: Delete returns 501
+    Given a program "Test Program" exists in the list
+    And DELETE /api/programs/:id will respond 501
+    When I confirm deletion of "Test Program"
+    Then "Test Program" remains in the list
+    And the Programs heading stays visible
+    And no pageerror is raised
+
+  Scenario: Delete returns 502
+    Given a program "Test Program" exists in the list
+    And DELETE /api/programs/:id will respond 502
+    When I confirm deletion of "Test Program"
+    Then "Test Program" remains in the list
+    And the Programs heading stays visible
+    And no pageerror is raised
+
+  Scenario: Delete returns 503
+    Given a program "Test Program" exists in the list
+    And DELETE /api/programs/:id will respond 503
+    When I confirm deletion of "Test Program"
+    Then "Test Program" remains in the list
+    And the Programs heading stays visible
+    And no pageerror is raised
+
 # Ambiguities and gaps in acceptance criteria (for QA review):
 # 1. Hard vs. soft delete not specified — affects name reuse and recovery.
 # 2. Impact on linked curriculum not addressed despite curriculum design context.
