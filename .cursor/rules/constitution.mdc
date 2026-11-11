@@ -15,7 +15,7 @@ Short always-on norms. Details live in `playwright-conventions.mdc`, `qa-orchest
 | Waiting | Web-first assertions (`expect(locator).…`); never boolean snapshots |
 | Auth | `storageState` + setup project; no per-test login UI |
 | Data | Unique names (Faker/timestamp); delete what you create |
-| Tags | Exactly one tag per `test()` — not on `describe` |
+| Tags | Exactly one of `@smoke`, `@sanity`, `@regression`, `@api`, `@e2e`, `@destructive` per `test()` — not on `describe` |
 
 ## SHOULD
 

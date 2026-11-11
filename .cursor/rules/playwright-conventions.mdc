@@ -109,7 +109,51 @@ test.beforeEach(async ({ page }) => {
 
 ## 5. Test data
 
-Import `{ test, expect }` from `fixtures/cleanup.fixture`. When a test creates a program, read `data.id` from `POST /api/programs` and call `trackProgram` immediately. Give each program a unique name. A `page.route` fulfill does not persist a row — do not track it, and leave the fixture's `DELETE /api/programs/<uuid>` unmocked.
+### Layout
+
+| Location | Purpose |
+|----------|---------|
+| `test-data/factories/` | Faker-backed factories for happy-path variable input |
+| `test-data/invalid/` | Curated invalid or boundary inputs as static `.ts` exports |
+| `test-data/enums/` | Repeated API paths, UI routes, and user-visible copy |
+| `process.env` | Secrets, `DIDAXIS_URL`, and API bearer tokens only |
+
+```typescript
+// ✅ Good — test-data/factories/program.factory.ts
+import { buildProgramCreateInput } from '../test-data/factories/program.factory';
+
+const { name, description } = buildProgramCreateInput({ name: 'Data Science Fundamentals' });
+await programsPage.createProgram({ name, description });
+```
+
+```typescript
+// ✅ Good — test-data/invalid/program-names.ts
+import { WHITESPACE_ONLY_PROGRAM_NAMES } from '../test-data/invalid/program-names';
+
+for (const name of WHITESPACE_ONLY_PROGRAM_NAMES) {
+  await modal.fillProgramName(name);
+}
+```
+
+```typescript
+// ✅ Good — test-data/enums/programs.ts
+import { ProgramsApiPath, ProgramsUiPath } from '../test-data/enums/programs';
+
+await request.get(`${process.env.DIDAXIS_URL}${ProgramsApiPath.collection}`, { ... });
+await page.goto(ProgramsUiPath.list);
+```
+
+```typescript
+// ❌ Bad — inline secret or duplicated path literals across specs
+const token = 'eyJhbGciOi...';
+await request.get(`${process.env.DIDAXIS_URL}/api/programs`);
+```
+
+**Why:** Factories keep happy-path data unique without copy-pasting `Date.now()` helpers; static invalid sets document the cases validation specs must cover; enums stop path drift; env vars keep secrets out of git.
+
+### Cleanup and tracking
+
+Import `{ test, expect }` from `fixtures/cleanup.fixture`. When a test creates a program, read `data.id` from `POST /api/programs` and call `trackProgram` immediately. Give each program a unique name (factory or suffix). A `page.route` fulfill does not persist a row — do not track it, and leave the fixture's `DELETE /api/programs/<uuid>` unmocked.
 
 ```typescript
 // ✅ Good — fixtures/program-create.helpers.ts
@@ -161,7 +205,7 @@ expect(body).toBeTruthy();
 
 ## 7. Network mocking
 
-Use `page.route` only when the stimulus is a synthetic programs response and the assertion is about the UI. Match pathname `/api/programs` or `/api/programs/:id` and the one method under test, fulfill that call with `contentType: 'application/json'`, and `route.continue()` for every other request. Never mock the endpoint the test is verifying (create, edit, delete, duplicate rejection, list filtering, cleanup). Read the error or empty copy from the live page before asserting it. If the screen renders nothing, assert the Programs heading stays visible and `pageerror` stays empty. One tag per test: `{ tag: '@edge' }`.
+Use `page.route` only when the stimulus is a synthetic programs response and the assertion is about the UI. Match pathname `/api/programs` or `/api/programs/:id` and the one method under test, fulfill that call with `contentType: 'application/json'`, and `route.continue()` for every other request. Never mock the endpoint the test is verifying (create, edit, delete, duplicate rejection, list filtering, cleanup). Read the error or empty copy from the live page before asserting it. If the screen renders nothing, assert the Programs heading stays visible and `pageerror` stays empty. One tag per test (usually `@regression` for mocked API/UI edge cases): `{ tag: '@regression' }`.
 
 No spec follows this yet. `tests/ds5-program-list-filtering-and-display.spec.ts` intercepts `**/*`. Advise this route:
 
@@ -269,6 +313,62 @@ await expect(row).toContainText(`${minutesAgo(new Date())} minutes ago`);
 
 **Why:** A label derived from the wall clock changes while the test runs, and extra retries or `workers: 1` hide that race instead of fixing it.
 
+## 11. Tags
+
+Assign **exactly one** Playwright tag per `test()` — never on `describe`. Allowed values:
+
+| Tag | When to use |
+|-----|-------------|
+| `@smoke` | Critical path after deploy; smallest set that proves the app is usable |
+| `@sanity` | Quick breadth check; more than smoke, still fast |
+| `@regression` | Ticket coverage, edge cases, a11y, and mocked API/UI scenarios |
+| `@api` | Contract or HTTP checks via the `request` fixture (no full UI journey) |
+| `@e2e` | Full authenticated UI flows through POMs (default for story specs) |
+| `@destructive` | **Only** when the test mutates **shared or global** state (locale, roles, feature flags, tenant settings) |
+
+A test that creates data **it** deletes (for example `trackProgram` and the cleanup fixture) keeps its importance tag (`@smoke`, `@regression`, `@e2e`, …) — **not** `@destructive`.
+
+Run slices with npm scripts (`package.json`): `test:smoke`, `test:sanity`, `test:regression`, `test:api`, `test:e2e`, and `test:destructive` (last runs `playwright test --grep @destructive --workers=1`). Do not set `workers: 1` in `playwright.config.ts` for the whole suite.
+
+Any `@destructive` test **must** register `test.afterEach` and/or `test.afterAll` that **reverts** the shared mutation (restore prior locale, role, flag, or setting), even when the test body fails.
+
+```typescript
+// ✅ Good — importance tag; self-cleaned data
+test('creates a program', { tag: '@e2e' }, async ({ page, trackProgram }) => {
+  const { name, description } = buildProgramCreateInput();
+  await programsPage.createProgram({ name, description });
+  // trackProgram in create helper — fixture deletes after the test
+});
+
+// ✅ Good — shared state; serial slice; explicit revert
+test('switches org locale to fr-CA', { tag: '@destructive' }, async ({ page, request }) => {
+  const priorLocale = await readOrgLocale(request);
+  try {
+    await setOrgLocaleViaUi(page, 'fr-CA');
+    await expect(page.getByRole('heading', { name: 'Programmes' })).toBeVisible();
+  } finally {
+    await restoreOrgLocale(request, priorLocale);
+  }
+});
+
+test.afterEach(async ({ request }) => {
+  await restoreOrgLocale(request, defaultLocale);
+});
+```
+
+```typescript
+// ❌ Bad — tag on describe, or two tags, or @destructive for tracked create/delete
+test.describe('Programs', { tag: '@smoke' }, () => { /* ... */ });
+
+test('...', { tag: ['@smoke', '@e2e'] }, async () => { /* ... */ });
+
+test('creates program', { tag: '@destructive' }, async ({ trackProgram }) => {
+  /* only mutates data this test deletes */
+});
+```
+
+**Why:** `--grep` slices power CI tiers; `@destructive` plus `--workers=1` avoids parallel tests clobbering shared settings; revert hooks keep the next run from starting in a bad global state.
+
 ## Do / Don't
 
 | Do | Don't |
@@ -277,7 +377,8 @@ await expect(row).toContainText(`${minutesAgo(new Date())} minutes ago`);
 | `expect(locator).toBeVisible()` / `.toHaveText()` | `waitForTimeout`, or `expect(await locator.isVisible())` |
 | Actions on a POM; every `expect` in the spec | Inline locators in the spec, or `expect` inside `pages/` |
 | `storageState` from `auth.setup.ts`; empty state only for login tests | UI login in every feature spec |
-| `trackProgram(data.id)` from the create response | `afterAll` cleanup, a hardcoded token, or tracking a mocked id |
+| `trackProgram(data.id)` from the create response; factories under `test-data/factories/` | `afterAll` cleanup, a hardcoded token, or tracking a mocked id |
+| One of `@smoke` … `@destructive` on each `test()`; revert hook on `@destructive` | Tag on `describe`, multiple tags, or `@destructive` for self-deleted rows |
 | `request.get` / `request.delete` with the env bearer and `DIDAXIS_URL` | `page.evaluate(() => fetch(...))` as the API check |
 | `page.route` for one method and pathname; `route.continue()` the rest | `page.route('**/*')`, or mocking the endpoint the test verifies |
 | Axe `wcag2a` + `wcag2aa`, then keyboard focus and Enter | `.disableRules()` to go green |

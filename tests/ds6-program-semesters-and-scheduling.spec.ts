@@ -62,7 +62,7 @@ test.describe('DS-6 — Program semesters and scheduling', () => {
 
   test(
     'TC-003: Create Semester stays disabled until required fields are filled; Cancel keeps empty state',
-    { tag: '@edge' },
+    { tag: '@regression' },
     async ({ page, trackProgram }) => {
       const programName = uniqueProgramName('Semester Edge Program');
       const programsPage = await createProgramViaUi(

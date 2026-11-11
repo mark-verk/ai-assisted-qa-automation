@@ -5,6 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:sanity": "playwright test --grep @sanity",
+    "test:regression": "playwright test --grep @regression",
+    "test:api": "playwright test --grep @api",
+    "test:e2e": "playwright test --grep @e2e",
+    "test:destructive": "playwright test --grep @destructive --workers=1",
     "test:ui": "playwright test --ui",
     "test:todomvc": "playwright test tests/todoMVC.spec.ts",
     "test:ds1": "playwright test tests/ds1-create-new-academic-program.spec.ts --workers=1",
@@ -25,6 +31,7 @@
   "homepage": "https://github.com/mark-verk/ai-assisted-qa-automation#readme",
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
+    "@faker-js/faker": "^10.6.0",
     "@playwright/test": "^1.63.0",
     "@types/node": "^26.6.1"
   },

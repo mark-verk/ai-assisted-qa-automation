@@ -14,8 +14,8 @@ function uniqueProgramName(base: string): string {
 
 const axeTags = ['wcag2a', 'wcag2aa'] as const;
 
-test.describe('Programs accessibility', { tag: '@regression' }, () => {
-  test('Programs list page has no axe violations', async ({ page }, testInfo) => {
+test.describe('Programs accessibility', () => {
+  test('Programs list page has no axe violations', { tag: '@regression' }, async ({ page }, testInfo) => {
     test.setTimeout(120_000);
     const programsPage = new ProgramsPage(page);
     await programsPage.goto();
@@ -26,7 +26,7 @@ test.describe('Programs accessibility', { tag: '@regression' }, () => {
     await assertNoAxeViolations(results.violations, testInfo);
   });
 
-  test('keyboard opens New Program dialog from primary control', async ({ page }, testInfo) => {
+  test('keyboard opens New Program dialog from primary control', { tag: '@regression' }, async ({ page }, testInfo) => {
     await runA11yCheckOrWarnInCi(testInfo, 'Keyboard accessibility', async () => {
       const programsPage = new ProgramsPage(page);
       await programsPage.goto();
@@ -39,7 +39,7 @@ test.describe('Programs accessibility', { tag: '@regression' }, () => {
     });
   });
 
-  test('New Program modal has no axe violations when scoped to the dialog', async ({ page }, testInfo) => {
+  test('New Program modal has no axe violations when scoped to the dialog', { tag: '@regression' }, async ({ page }, testInfo) => {
     test.setTimeout(120_000);
     const programsPage = new ProgramsPage(page);
     await programsPage.goto();
@@ -56,7 +56,7 @@ test.describe('Programs accessibility', { tag: '@regression' }, () => {
     await assertNoAxeViolations(results.violations, testInfo);
   });
 
-  test('New Semester modal has no axe violations when scoped to the dialog', async ({
+  test('New Semester modal has no axe violations when scoped to the dialog', { tag: '@regression' }, async ({
     page,
     trackProgram,
   }, testInfo) => {
@@ -81,7 +81,7 @@ test.describe('Programs accessibility', { tag: '@regression' }, () => {
     await assertNoAxeViolations(results.violations, testInfo);
   });
 
-  test('keyboard opens New Semester dialog from + Semester control', async ({
+  test('keyboard opens New Semester dialog from + Semester control', { tag: '@regression' }, async ({
     page,
     trackProgram,
   }, testInfo) => {

@@ -54,12 +54,18 @@ npm run report        # open the last HTML report
 
 ### Run a tagged slice
 
-Tests use Playwright’s `tag` option (one tag per `test()` where tagged). Examples:
+Each `test()` carries **exactly one** tag: `@smoke`, `@sanity`, `@regression`, `@api`, `@e2e`, or `@destructive` (shared/global state only; run serially). See `.cursor/rules/playwright-conventions.mdc` §11.
 
 ```bash
-npx playwright test --grep @regression
-npx playwright test --grep @edge
+npm run test:smoke
+npm run test:sanity
+npm run test:regression
+npm run test:api
+npm run test:e2e
+npm run test:destructive   # --workers=1
 ```
+
+Or use `--grep` directly, for example `npx playwright test --grep @regression`.
 
 Run a single spec file:
 
@@ -98,4 +104,5 @@ Typical flow: reference a Jira ticket (`DS-*`) → orchestration applies `jira-t
 - `tests/` — Playwright specs and `auth.setup.ts`
 - `pages/` — Page object models
 - `fixtures/` — Shared fixtures (e.g. API cleanup)
+- `test-data/` — Faker factories, static invalid inputs, enums
 - `playwright.config.ts` — Runner config (`fullyParallel`, CI retries, `storageState` setup project)
