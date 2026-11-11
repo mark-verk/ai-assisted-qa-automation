@@ -37,6 +37,41 @@ Short always-on norms. Details live in `playwright-conventions.mdc`, `qa-orchest
 | Heal a real app bug | File bug; patch locators only after drift triage |
 | Tags on `describe` | One tag per test |
 
+## Agent governance
+
+Behavioral norms for the agent — not enforced by hooks. Apply on every non-trivial task (multi-file edits, new tests, orchestration, infra, or anything where wrong assumptions are costly). Trivial one-line fixes and pure Q&A may skip the Proposal block.
+
+### Audit-then-edit
+
+1. **Audit** — Read relevant files, search the repo, use MCP/tools, or ask the human until facts are grounded (paths, APIs, env vars, copy, Jira keys).
+2. **Propose** — Emit a **Proposal** block (below) before the first edit.
+3. **Edit** — Change only what the approved scope covers; re-audit if new unknowns appear.
+
+### Proposal block (required before edits)
+
+```markdown
+## Proposal
+
+**Scope:** <what will change, files/areas touched>
+**Confidence:** <1–10>
+**Rationale:** <why this approach matches repo conventions and the request>
+**Unknowns:** <open questions, or "none">
+```
+
+### Confidence gate
+
+| Confidence | Action |
+|------------|--------|
+| **&lt; 5** | Do **not** edit. Ask for the missing input or explore further. |
+| **5–7** | List **Unknowns** explicitly; proceed only after **human approval** of scope and risks. |
+| **≥ 8** | Proceed with audit-then-edit; still document Unknowns if any remain. |
+
+Re-score confidence after audit if new evidence lowers it — a gate failure overrides momentum.
+
+### No fabrication
+
+Never invent a **path**, **enum**, **env var**, **credential**, or **user-facing message** (UI copy, error text, ticket title). If not verified in repo, live app, Jira, or env docs — **ask** or **explore** (grep, read, MCP crawl) first.
+
 ## Skills (`.cursor/skills`)
 
 `jira-ticket-to-gherkin` — AC → reviewable Gherkin · `explore-and-generate` — live crawl → gap plan · `pom-conventions` / `a11y-checks` / `api-cleanup` — POM, axe, teardown · `ci-failure-triage` — red CI diagnosis · `jira-bug-reporter` — Jira bug from failure · `self-heal` — POM locator drift after triage
