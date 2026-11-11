@@ -1,13 +1,13 @@
 # Suite reliability eval report
 
-_Generated: 2026-11-11T04:03:18.480Z_  
+_Generated: 2026-11-11T13:51:26.927Z_  
 _Regenerate: `npm run eval:report` (local) or after `test-generation.yml` / agent `stop` hook._
 
 ## Flake rate
 
 | Metric | Value |
 |--------|-------|
-| **Rate** | **4.9%** (21 flaky / 430 executed outcomes) |
+| **Rate** | **5.2%** (25 flaky / 485 executed outcomes) |
 | **Window** | Last **9** Playwright CI runs (10 per workflow max, e2e + test-generation) |
 
 **How measured:** Parsed Playwright list-reporter lines (`N flaky`, `M passed`) from `gh run view --log` on the last N E2E and test-generation workflow runs.
@@ -19,6 +19,8 @@ _Regenerate: `npm run eval:report` (local) or after `test-generation.yml` / agen
 
 | Run | Workflow | Conclusion | Flaky | Passed |
 |-----|----------|------------|-------|--------|
+| [42957219575](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/42957219575) | e2e.yml | failure | 2 | 58 |
+| [42957036734](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/42957036734) | e2e.yml | failure | 2 | 59 |
 | [42954621848](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/42954621848) | e2e.yml | failure | 1 | 59 |
 | [42949525954](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/42949525954) | e2e.yml | failure | 1 | 59 |
 | [42833555427](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/42833555427) | test-generation.yml | success | 7 | 53 |
@@ -26,8 +28,6 @@ _Regenerate: `npm run eval:report` (local) or after `test-generation.yml` / agen
 | [42642809869](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/42642809869) | test-generation.yml | success | 1 | 59 |
 | [42533096439](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/42533096439) | e2e.yml | failure | 3 | 58 |
 | [42529681380](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/42529681380) | test-generation.yml | success | 1 | 2 |
-| [42529061699](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/42529061699) | e2e.yml | failure | 0 | 5 |
-| [42528757026](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/42528757026) | e2e.yml | failure | 0 | 61 |
 
 </details>
 
@@ -82,13 +82,13 @@ _First-PR pass = E2E green on first PR run + generation-gate conformance on new 
 
 | Metric | Value |
 |--------|-------|
-| **Ask** | **5** |
-| **Guess** | **12** |
-| **Ratio** | 5 ask / 12 guess |
+| **Ask** | **0** |
+| **Guess** | **0** |
+| **Ratio** | 0 ask / 0 guess |
 
 **How measured:** `.cursor/eval/telemetry.jsonl` (AskQuestion hook) plus session JSONL scan for AskQuestion tool calls and heal/drift incidents tied to uninvented UI copy.
 
-**What it tells us:** Invented UI/locale values drove heals — enforce “crawl, don’t invent” in orchestration.
+**What it tells us:** Agents tended to clarify before committing values (favour more MCP crawl over assumptions).
 
 ## Summary
 

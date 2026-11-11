@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T04:03:18.480Z",
+  "generatedAt": "2026-11-11T13:51:26.927Z",
   "flake": {
     "windowRuns": 9,
     "configuredN": 10,
@@ -8,6 +8,22 @@
       "test-generation.yml"
     ],
     "perRun": [
+      {
+        "runId": 42957219575,
+        "workflow": "e2e.yml",
+        "conclusion": "failure",
+        "createdAt": "2026-11-11T04:08:00Z",
+        "flaky": 2,
+        "passed": 58
+      },
+      {
+        "runId": 42957036734,
+        "workflow": "e2e.yml",
+        "conclusion": "failure",
+        "createdAt": "2026-11-11T04:06:22Z",
+        "flaky": 2,
+        "passed": 59
+      },
       {
         "runId": 42954621848,
         "workflow": "e2e.yml",
@@ -63,29 +79,13 @@
         "createdAt": "2026-11-08T22:19:43Z",
         "flaky": 1,
         "passed": 2
-      },
-      {
-        "runId": 42529061699,
-        "workflow": "e2e.yml",
-        "conclusion": "failure",
-        "createdAt": "2026-11-08T22:12:24Z",
-        "flaky": 0,
-        "passed": 5
-      },
-      {
-        "runId": 42528757026,
-        "workflow": "e2e.yml",
-        "conclusion": "failure",
-        "createdAt": "2026-11-08T22:08:57Z",
-        "flaky": 0,
-        "passed": 61
       }
     ],
     "totals": {
-      "flaky": 21,
-      "passed": 409
+      "flaky": 25,
+      "passed": 460
     },
-    "ratePct": "4.9",
+    "ratePct": "5.2",
     "measurement": "Parsed Playwright list-reporter lines (`N flaky`, `M passed`) from `gh run view --log` on the last N E2E and test-generation workflow runs."
   },
   "heal": {
@@ -196,11 +196,11 @@
     "measurement": "DS-* PRs: first `e2e.yml` conclusion on PR branch, generation-gate rules on added specs in working tree, filename contains ticket id (maps-to-AC proxy)."
   },
   "askGuess": {
-    "ask": 5,
-    "guess": 12,
-    "ratio": "5 ask / 12 guess",
-    "telemetryFile": ".cursor\\eval\\telemetry.jsonl",
-    "transcriptsScanned": 73,
+    "ask": 0,
+    "guess": 0,
+    "ratio": "0 ask / 0 guess",
+    "telemetryFile": ".cursor/eval/telemetry.jsonl",
+    "transcriptsScanned": 0,
     "measurement": "`.cursor/eval/telemetry.jsonl` (AskQuestion hook) plus session JSONL scan for AskQuestion tool calls and heal/drift incidents tied to uninvented UI copy."
   }
 }
