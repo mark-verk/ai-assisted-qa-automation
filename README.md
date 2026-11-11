@@ -93,12 +93,31 @@ Project layout:
 
 | Path | Role |
 |------|------|
-| `.cursor/rules/` | Constitution, Playwright conventions, QA orchestration |
+| `.cursor/rules/` | Constitution (incl. agent governance), Playwright conventions, QA orchestration |
 | `.cursor/skills/` | Workflows: ticket → Gherkin, explore coverage, self-heal, API cleanup, a11y |
 | `.cursor/agents/` | `test-writer`, `triage`, `bug-reporter` subagent prompts |
 | `.cursor/hooks/` | Gates on generated/edited test and page files |
 
 Typical flow: reference a Jira ticket (`DS-*`) → orchestration applies `jira-ticket-to-gherkin` → human reviews Gherkin → `test-writer` adds specs under `tests/` and POMs under `pages/` → `npx playwright test`. On failure, triage classifies app bug vs locator drift; drift is healed in POMs only (see `qa-orchestration.mdc`).
+
+### Agent governance (behavioral)
+
+Defined in `.cursor/rules/constitution.mdc` — **not** enforced by hooks (`.cursor/hooks/` still lint locators, tags, and generation rules). On non-trivial work, the agent **audits** (read/search/MCP), posts a **Proposal** in chat, then **edits** only within approved scope.
+
+| Field | Meaning |
+|-------|---------|
+| **Scope** | Files/areas and intended outcome |
+| **Confidence** | 1–10 how grounded the plan is |
+| **Rationale** | Fit with repo conventions and the request |
+| **Unknowns** | Open questions, or `none` |
+
+| Confidence | What you should see |
+|------------|---------------------|
+| **< 5** | Questions only — no file edits until input or exploration |
+| **5–7** | Proposal + explicit unknowns — approve before edits |
+| **≥ 8** | Proposal, then edits (unknowns listed if any remain) |
+
+The agent must not invent paths, enums, env vars, credentials, or UI/error copy; it should ask or verify in repo, app, or Jira first. Trivial one-line fixes and Q&A may skip the Proposal block.
 
 ## Project structure
 
