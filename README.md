@@ -77,6 +77,7 @@ npx playwright test tests/ds1-create-new-academic-program.spec.ts
 
 - **E2E** (`.github/workflows/e2e.yml`): `npx playwright test` on push/PR using repository secrets for the **Run tests** variables.
 - **Test generation** (`.github/workflows/test-generation.yml`): scheduled/dispatch workflow that runs the suite, optional self-heal on red, and Jira backlog processing via the Cursor CLI. Requires **Agent / CI setup** secrets in addition to Didaxis credentials.
+- **Reliability report** (`eval-report.md`): regenerated at the end of test-generation CI, after local agent runs (`.cursor/hooks.json` → `stop` / `subagentStop`), or manually via `npm run eval:report`. Metrics are sourced from CI logs, PR history, and `.cursor/eval/telemetry.jsonl` (no built-in Cursor telemetry).
 
 ## Cursor agents and skills (optional)
 

@@ -1,0 +1,206 @@
+{
+  "generatedAt": "2026-11-11T04:03:18.480Z",
+  "flake": {
+    "windowRuns": 9,
+    "configuredN": 10,
+    "workflows": [
+      "e2e.yml",
+      "test-generation.yml"
+    ],
+    "perRun": [
+      {
+        "runId": 42954621848,
+        "workflow": "e2e.yml",
+        "conclusion": "failure",
+        "createdAt": "2026-11-11T03:43:34Z",
+        "flaky": 1,
+        "passed": 59
+      },
+      {
+        "runId": 42949525954,
+        "workflow": "e2e.yml",
+        "conclusion": "failure",
+        "createdAt": "2026-11-11T02:57:47Z",
+        "flaky": 1,
+        "passed": 59
+      },
+      {
+        "runId": 42833555427,
+        "workflow": "test-generation.yml",
+        "conclusion": "success",
+        "createdAt": "2026-11-10T14:23:16Z",
+        "flaky": 7,
+        "passed": 53
+      },
+      {
+        "runId": 42743205687,
+        "workflow": "e2e.yml",
+        "conclusion": "failure",
+        "createdAt": "2026-11-10T02:30:16Z",
+        "flaky": 7,
+        "passed": 53
+      },
+      {
+        "runId": 42642809869,
+        "workflow": "test-generation.yml",
+        "conclusion": "success",
+        "createdAt": "2026-11-09T15:15:24Z",
+        "flaky": 1,
+        "passed": 59
+      },
+      {
+        "runId": 42533096439,
+        "workflow": "e2e.yml",
+        "conclusion": "failure",
+        "createdAt": "2026-11-08T23:01:27Z",
+        "flaky": 3,
+        "passed": 58
+      },
+      {
+        "runId": 42529681380,
+        "workflow": "test-generation.yml",
+        "conclusion": "success",
+        "createdAt": "2026-11-08T22:19:43Z",
+        "flaky": 1,
+        "passed": 2
+      },
+      {
+        "runId": 42529061699,
+        "workflow": "e2e.yml",
+        "conclusion": "failure",
+        "createdAt": "2026-11-08T22:12:24Z",
+        "flaky": 0,
+        "passed": 5
+      },
+      {
+        "runId": 42528757026,
+        "workflow": "e2e.yml",
+        "conclusion": "failure",
+        "createdAt": "2026-11-08T22:08:57Z",
+        "flaky": 0,
+        "passed": 61
+      }
+    ],
+    "totals": {
+      "flaky": 21,
+      "passed": 409
+    },
+    "ratePct": "4.9",
+    "measurement": "Parsed Playwright list-reporter lines (`N flaky`, `M passed`) from `gh run view --log` on the last N E2E and test-generation workflow runs."
+  },
+  "heal": {
+    "total": 2,
+    "cleanly": 1,
+    "ratePct": "50",
+    "maskedRegression": 0,
+    "details": [
+      {
+        "number": 8,
+        "title": "fix(test): self-heal locator drift",
+        "state": "MERGED",
+        "pagesOnly": true,
+        "assertionDrops": 0,
+        "greenProof": true,
+        "clean": true
+      },
+      {
+        "number": 5,
+        "title": "fix(pom): Programs heading locator drift",
+        "state": "OPEN",
+        "pagesOnly": true,
+        "assertionDrops": 0,
+        "greenProof": false,
+        "clean": false
+      }
+    ],
+    "measurement": "GitHub PR history (`gh pr list`) for heal/self-heal titles; clean = `pages/` only, zero assertion removals, and first E2E success or merge with unchanged assertions."
+  },
+  "generation": {
+    "total": 6,
+    "pass": 0,
+    "ratePct": "0",
+    "details": [
+      {
+        "number": 7,
+        "title": "DS-4: Delete program API edge-case tests",
+        "greenFirst": false,
+        "conforming": true,
+        "acMap": true,
+        "firstPass": false,
+        "firstE2e": {
+          "firstConclusion": "action_required",
+          "runId": 42531538149
+        }
+      },
+      {
+        "number": 6,
+        "title": "DS-1: Create academic program API edge-case tests",
+        "greenFirst": false,
+        "conforming": true,
+        "acMap": true,
+        "firstPass": false,
+        "firstE2e": {
+          "firstConclusion": "action_required",
+          "runId": 42531177719
+        }
+      },
+      {
+        "number": 4,
+        "title": "DS-293: Playwright tests for edit existing program details",
+        "greenFirst": false,
+        "conforming": false,
+        "acMap": true,
+        "firstPass": false,
+        "firstE2e": {
+          "firstConclusion": "action_required",
+          "runId": 42145662672
+        }
+      },
+      {
+        "number": 3,
+        "title": "DS-293: Edit existing program details tests",
+        "greenFirst": false,
+        "conforming": false,
+        "acMap": true,
+        "firstPass": false,
+        "firstE2e": {
+          "firstConclusion": "failure",
+          "runId": 42102845449
+        }
+      },
+      {
+        "number": 2,
+        "title": "DS-292: Create new academic program tests",
+        "greenFirst": false,
+        "conforming": true,
+        "acMap": true,
+        "firstPass": false,
+        "firstE2e": {
+          "firstConclusion": "failure",
+          "runId": 42102305727
+        }
+      },
+      {
+        "number": 1,
+        "title": "DS-275: Delete program with confirmation tests",
+        "greenFirst": false,
+        "conforming": true,
+        "acMap": true,
+        "firstPass": false,
+        "firstE2e": {
+          "firstConclusion": "failure",
+          "runId": 42101806066
+        }
+      }
+    ],
+    "measurement": "DS-* PRs: first `e2e.yml` conclusion on PR branch, generation-gate rules on added specs in working tree, filename contains ticket id (maps-to-AC proxy)."
+  },
+  "askGuess": {
+    "ask": 5,
+    "guess": 12,
+    "ratio": "5 ask / 12 guess",
+    "telemetryFile": ".cursor\\eval\\telemetry.jsonl",
+    "transcriptsScanned": 73,
+    "measurement": "`.cursor/eval/telemetry.jsonl` (AskQuestion hook) plus session JSONL scan for AskQuestion tool calls and heal/drift incidents tied to uninvented UI copy."
+  }
+}

@@ -15,6 +15,24 @@
         "matcher": "Write",
         "failClosed": true
       }
+    ],
+    "postToolUse": [
+      {
+        "command": "node .cursor/hooks/telemetry-ask.js",
+        "matcher": "AskQuestion"
+      }
+    ],
+    "stop": [
+      {
+        "command": "node .cursor/hooks/run-eval-report.js",
+        "loop_limit": 1
+      }
+    ],
+    "subagentStop": [
+      {
+        "command": "node .cursor/hooks/run-eval-report.js",
+        "loop_limit": 1
+      }
     ]
   }
 }
