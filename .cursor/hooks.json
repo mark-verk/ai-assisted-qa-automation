@@ -9,6 +9,11 @@
       {
         "command": "node .cursor/hooks/assertion-weaken-gate.js",
         "failClosed": true
+      },
+      {
+        "command": "node .cursor/hooks/constitution-gate.js",
+        "matcher": "Write",
+        "failClosed": true
       }
     ]
   }

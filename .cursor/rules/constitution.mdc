@@ -1,0 +1,46 @@
+---
+description: Non-negotiable Playwright project principles — read on every task
+alwaysApply: true
+---
+
+# Constitution
+
+Short always-on norms. Details live in `playwright-conventions.mdc`, `qa-orchestration.mdc`, and `.cursor/skills`.
+
+## MUST
+
+| Practice | Rule |
+|----------|------|
+| Locators | Role-based (`getByRole` first); POM only — no inline locators in specs |
+| Waiting | Web-first assertions (`expect(locator).…`); never boolean snapshots |
+| Auth | `storageState` + setup project; no per-test login UI |
+| Data | Unique names (Faker/timestamp); delete what you create |
+| Tags | Exactly one tag per `test()` — not on `describe` |
+
+## SHOULD
+
+| Practice | Rule |
+|----------|------|
+| Factories | Faker (or shared helpers) for variable test input |
+| Enums | Named constants for repeated UI/API strings |
+| POM docs | JSDoc on public page actions |
+
+## WON'T
+
+| Anti-pattern | Why |
+|--------------|-----|
+| XPath / fragile CSS | Breaks on DOM drift |
+| `waitForTimeout` | Flaky, masks real readiness |
+| Hardcoded secrets | Use env / CI secrets |
+| `any` | Type real shapes |
+| Weakened assertions | Don't greenwash failures |
+| Heal a real app bug | File bug; patch locators only after drift triage |
+| Tags on `describe` | One tag per test |
+
+## Skills (`.cursor/skills`)
+
+`jira-ticket-to-gherkin` — AC → reviewable Gherkin · `explore-and-generate` — live crawl → gap plan · `pom-conventions` / `a11y-checks` / `api-cleanup` — POM, axe, teardown · `ci-failure-triage` — red CI diagnosis · `jira-bug-reporter` — Jira bug from failure · `self-heal` — POM locator drift after triage
+
+## Agents (`.cursor/agents`)
+
+`test-writer` — plan → spec under `tests/` · `triage` — classify bug vs test issue (readonly) · `bug-reporter` — Jira bug linked to story (readonly)
