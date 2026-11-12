@@ -1,13 +1,53 @@
 {
-  "generatedAt": "2026-11-11T13:51:26.927Z",
+  "generatedAt": "2026-11-12T14:52:19.180Z",
   "flake": {
-    "windowRuns": 9,
+    "windowRuns": 14,
     "configuredN": 10,
     "workflows": [
       "e2e.yml",
       "test-generation.yml"
     ],
     "perRun": [
+      {
+        "runId": 43147019380,
+        "workflow": "e2e.yml",
+        "conclusion": "failure",
+        "createdAt": "2026-11-12T03:15:53Z",
+        "flaky": 3,
+        "passed": 57
+      },
+      {
+        "runId": 43146842159,
+        "workflow": "e2e.yml",
+        "conclusion": "failure",
+        "createdAt": "2026-11-12T03:14:23Z",
+        "flaky": 1,
+        "passed": 58
+      },
+      {
+        "runId": 43146812123,
+        "workflow": "e2e.yml",
+        "conclusion": "failure",
+        "createdAt": "2026-11-12T03:14:08Z",
+        "flaky": 1,
+        "passed": 58
+      },
+      {
+        "runId": 43144612256,
+        "workflow": "test-generation.yml",
+        "conclusion": "success",
+        "createdAt": "2026-11-12T02:54:43Z",
+        "flaky": 0,
+        "passed": 60
+      },
+      {
+        "runId": 43030748473,
+        "workflow": "test-generation.yml",
+        "conclusion": "success",
+        "createdAt": "2026-11-11T13:37:06Z",
+        "flaky": 1,
+        "passed": 59
+      },
       {
         "runId": 42957219575,
         "workflow": "e2e.yml",
@@ -82,10 +122,10 @@
       }
     ],
     "totals": {
-      "flaky": 25,
-      "passed": 460
+      "flaky": 31,
+      "passed": 752
     },
-    "ratePct": "5.2",
+    "ratePct": "4.0",
     "measurement": "Parsed Playwright list-reporter lines (`N flaky`, `M passed`) from `gh run view --log` on the last N E2E and test-generation workflow runs."
   },
   "heal": {
@@ -116,10 +156,34 @@
     "measurement": "GitHub PR history (`gh pr list`) for heal/self-heal titles; clean = `pages/` only, zero assertion removals, and first E2E success or merge with unchanged assertions."
   },
   "generation": {
-    "total": 6,
+    "total": 8,
     "pass": 0,
     "ratePct": "0",
     "details": [
+      {
+        "number": 10,
+        "title": "DS-300: Duplicate Program Name on create regression",
+        "greenFirst": false,
+        "conforming": true,
+        "acMap": true,
+        "firstPass": false,
+        "firstE2e": {
+          "firstConclusion": "failure",
+          "runId": 43146842159
+        }
+      },
+      {
+        "number": 9,
+        "title": "DS-299: Edit Program over-limit name regression",
+        "greenFirst": false,
+        "conforming": true,
+        "acMap": true,
+        "firstPass": false,
+        "firstE2e": {
+          "firstConclusion": "failure",
+          "runId": 43146812123
+        }
+      },
       {
         "number": 7,
         "title": "DS-4: Delete program API edge-case tests",
