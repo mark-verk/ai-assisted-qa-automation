@@ -1,14 +1,14 @@
 # Suite reliability eval report
 
-_Generated: 2026-11-11T13:51:26.927Z_  
+_Generated: 2026-11-12T03:14:58.959Z_  
 _Regenerate: `npm run eval:report` (local) or after `test-generation.yml` / agent `stop` hook._
 
 ## Flake rate
 
 | Metric | Value |
 |--------|-------|
-| **Rate** | **5.2%** (25 flaky / 485 executed outcomes) |
-| **Window** | Last **9** Playwright CI runs (10 per workflow max, e2e + test-generation) |
+| **Rate** | **4.8%** (26 flaky / 545 executed outcomes) |
+| **Window** | Last **10** Playwright CI runs (10 per workflow max, e2e + test-generation) |
 
 **How measured:** Parsed Playwright list-reporter lines (`N flaky`, `M passed`) from `gh run view --log` on the last N E2E and test-generation workflow runs.
 
@@ -19,6 +19,7 @@ _Regenerate: `npm run eval:report` (local) or after `test-generation.yml` / agen
 
 | Run | Workflow | Conclusion | Flaky | Passed |
 |-----|----------|------------|-------|--------|
+| [43030748473](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/43030748473) | test-generation.yml | success | 1 | 59 |
 | [42957219575](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/42957219575) | e2e.yml | failure | 2 | 58 |
 | [42957036734](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/42957036734) | e2e.yml | failure | 2 | 59 |
 | [42954621848](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/42954621848) | e2e.yml | failure | 1 | 59 |
@@ -56,7 +57,7 @@ _Regenerate: `npm run eval:report` (local) or after `test-generation.yml` / agen
 
 | Metric | Value |
 |--------|-------|
-| **First-PR pass** | **0 / 6** (0%) |
+| **First-PR pass** | **0 / 8** (0%) |
 
 _First-PR pass = E2E green on first PR run + generation-gate conformance on new specs + filename maps to DS ticket._
 
@@ -69,6 +70,8 @@ _First-PR pass = E2E green on first PR run + generation-gate conformance on new 
 
 | PR | Green first E2E | Conforming | Maps AC | Pass |
 |----|-----------------|------------|---------|------|
+| #10 | false | true | true | false |
+| #9 | false | true | true | false |
 | #7 | false | true | true | false |
 | #6 | false | true | true | false |
 | #4 | false | false | true | false |
