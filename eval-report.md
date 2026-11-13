@@ -1,14 +1,14 @@
 # Suite reliability eval report
 
-_Generated: 2026-11-12T14:52:19.180Z_  
+_Generated: 2026-11-13T14:07:35.870Z_  
 _Regenerate: `npm run eval:report` (local) or after `test-generation.yml` / agent `stop` hook._
 
 ## Flake rate
 
 | Metric | Value |
 |--------|-------|
-| **Rate** | **4.0%** (31 flaky / 783 executed outcomes) |
-| **Window** | Last **14** Playwright CI runs (10 per workflow max, e2e + test-generation) |
+| **Rate** | **3.8%** (32 flaky / 843 executed outcomes) |
+| **Window** | Last **15** Playwright CI runs (10 per workflow max, e2e + test-generation) |
 
 **How measured:** Parsed Playwright list-reporter lines (`N flaky`, `M passed`) from `gh run view --log` on the last N E2E and test-generation workflow runs.
 
@@ -19,6 +19,7 @@ _Regenerate: `npm run eval:report` (local) or after `test-generation.yml` / agen
 
 | Run | Workflow | Conclusion | Flaky | Passed |
 |-----|----------|------------|-------|--------|
+| [43239634358](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/43239634358) | test-generation.yml | success | 1 | 59 |
 | [43147019380](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/43147019380) | e2e.yml | failure | 3 | 57 |
 | [43146842159](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/43146842159) | e2e.yml | failure | 1 | 58 |
 | [43146812123](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/43146812123) | e2e.yml | failure | 1 | 58 |
