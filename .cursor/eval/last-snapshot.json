@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-24T17:21:50.311Z",
+  "generatedAt": "2026-11-25T16:57:12.541Z",
   "flake": {
     "windowRuns": 18,
     "configuredN": 10,
@@ -8,6 +8,14 @@
       "test-generation.yml"
     ],
     "perRun": [
+      {
+        "runId": 45443412145,
+        "workflow": "test-generation.yml",
+        "conclusion": "success",
+        "createdAt": "2026-11-24T16:59:10Z",
+        "flaky": 6,
+        "passed": 34
+      },
       {
         "runId": 45227841175,
         "workflow": "test-generation.yml",
@@ -97,14 +105,6 @@
         "passed": 58
       },
       {
-        "runId": 43144612256,
-        "workflow": "test-generation.yml",
-        "conclusion": "success",
-        "createdAt": "2026-11-12T02:54:43Z",
-        "flaky": 0,
-        "passed": 60
-      },
-      {
         "runId": 42957219575,
         "workflow": "e2e.yml",
         "conclusion": "failure",
@@ -154,10 +154,10 @@
       }
     ],
     "totals": {
-      "flaky": 32,
-      "passed": 1052
+      "flaky": 38,
+      "passed": 1026
     },
-    "ratePct": "3.0",
+    "ratePct": "3.6",
     "measurement": "Parsed Playwright list-reporter lines (`N flaky`, `M passed`) from `gh run view --log` on the last N E2E and test-generation workflow runs."
   },
   "heal": {
