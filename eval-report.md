@@ -1,13 +1,13 @@
 # Suite reliability eval report
 
-_Generated: 2026-11-25T16:57:12.541Z_  
+_Generated: 2026-11-26T16:37:15.696Z_  
 _Regenerate: `npm run eval:report` (local) or after `test-generation.yml` / agent `stop` hook._
 
 ## Flake rate
 
 | Metric | Value |
 |--------|-------|
-| **Rate** | **3.6%** (38 flaky / 1064 executed outcomes) |
+| **Rate** | **3.6%** (38 flaky / 1065 executed outcomes) |
 | **Window** | Last **18** Playwright CI runs (10 per workflow max, e2e + test-generation) |
 
 **How measured:** Parsed Playwright list-reporter lines (`N flaky`, `M passed`) from `gh run view --log` on the last N E2E and test-generation workflow runs.
@@ -19,6 +19,7 @@ _Regenerate: `npm run eval:report` (local) or after `test-generation.yml` / agen
 
 | Run | Workflow | Conclusion | Flaky | Passed |
 |-----|----------|------------|-------|--------|
+| [45658123967](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/45658123967) | test-generation.yml | failure | 1 | 60 |
 | [45443412145](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/45443412145) | test-generation.yml | success | 6 | 34 |
 | [45227841175](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/45227841175) | test-generation.yml | success | 3 | 58 |
 | [44758120211](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/44758120211) | test-generation.yml | success | 0 | 59 |
@@ -27,7 +28,6 @@ _Regenerate: `npm run eval:report` (local) or after `test-generation.yml` / agen
 | [44115285039](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/44115285039) | test-generation.yml | success | 1 | 59 |
 | [43890291741](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/43890291741) | test-generation.yml | success | 1 | 60 |
 | [43438227570](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/43438227570) | test-generation.yml | success | 2 | 59 |
-| [43239634358](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/43239634358) | test-generation.yml | success | 1 | 59 |
 | [43147019380](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/43147019380) | e2e.yml | failure | 3 | 57 |
 | [43146842159](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/43146842159) | e2e.yml | failure | 1 | 58 |
 | [43146812123](https://github.com/mark-verk/ai-assisted-qa-automation/actions/runs/43146812123) | e2e.yml | failure | 1 | 58 |
